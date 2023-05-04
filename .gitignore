@@ -1,0 +1,14 @@
+# Ignore Scrapy output files
+*.log
+*.jl
+*.json
+*.csv
+
+# Ignore Scrapy egg files
+*.egg-info/
+
+# Ignore Python byte code files
+*.pyc
+
+# Ignore Pyenv virtual env file
+*.python-version
