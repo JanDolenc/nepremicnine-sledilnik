@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic import condecimal
-from sqlmodel import Field, SQLModel, create_engine
+from sqlmodel import Field, SQLModel, create_engine, Session
 
 
 class Agencija(SQLModel, table=True):
@@ -53,5 +53,31 @@ def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
 
-if __name__ == "__main__":
+def create_nepremicnina():
+    with Session(engine) as session:
+        nepremicnina_za_vnos = Nepremicnina(
+            vrsta="Stanovanje", tip="2-sobno", nadstropje="1", velikost=59.6, leto_izgradnje=1900, lokacija_id=1)
+        session.add(nepremicnina_za_vnos)
+        session.commit()
+
+        oglas_za_vnos = Oglas(
+            referencna_st=6545780, naslov="LJ. MOSTE, BLIŽINA TRŽNICE", url="vnos-z-sqlmodel-tutorial-connect-rows-join", posredovanje="Prodaja", nepremicnina_id=nepremicnina_za_vnos.id, agencija_id=1
+        )
+
+        # this line above: nepremicnina_id=nepremicnina_za_vnos.id works because it triggers a refresh
+
+        session.add(oglas_za_vnos)
+        session.commit()
+
+        session.refresh(oglas_za_vnos)
+
+        print("Created oglas:", oglas_za_vnos)
+
+
+def main():
     create_db_and_tables()
+    create_nepremicnina()
+
+
+if __name__ == "__main__":
+    main()
