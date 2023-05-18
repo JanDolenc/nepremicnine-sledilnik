@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic import condecimal
-from sqlmodel import Field, SQLModel, create_engine, Session
+from sqlmodel import Field, SQLModel, create_engine, Session, select
 
 
 class Agencija(SQLModel, table=True):
@@ -74,9 +74,28 @@ def create_nepremicnina():
         print("Created oglas:", oglas_za_vnos)
 
 
+def select_oglase():
+    with Session(engine) as session:
+        statement = select(Oglas, Nepremicnina).where(
+            Oglas.nepremicnina_id == Nepremicnina.id)
+        results = session.exec(statement)
+        for oglas, nepremicnina in results:
+            print("Oglas:", oglas, "Nepremicnina:", nepremicnina)
+
+
+def select_oglase_join():
+    with Session(engine) as session:
+        statement = select(Oglas, Nepremicnina).join(Nepremicnina)
+        results = session.exec(statement)
+        for oglas, nepremicnina in results:
+            print("Oglas:", oglas, "Nepremicnina:", nepremicnina)
+
+
 def main():
-    create_db_and_tables()
-    create_nepremicnina()
+    # create_db_and_tables()
+    # create_nepremicnina()
+    select_oglase()
+    select_oglase_join()
 
 
 if __name__ == "__main__":
