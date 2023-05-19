@@ -1,17 +1,22 @@
 from typing import Optional
 
 from pydantic import condecimal
-from sqlmodel import Field, SQLModel, create_engine, Session, select
+from sqlmodel import Field, Relationship, SQLModel, create_engine, Session, select
 
 
 class Agencija(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     naziv: Optional[str] = Field(default=None, unique=True)
 
+    oglasi: list["Oglas"] = Relationship(back_populates="agencija")
+
 
 class Lokacija(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     regija: str = Field(unique=True)
+
+    nepremicnine: list["Nepremicnina"] = Relationship(
+        back_populates="lokacija")
 
 
 class Nepremicnina(SQLModel, table=True):
@@ -25,6 +30,9 @@ class Nepremicnina(SQLModel, table=True):
         max_digits=10, decimal_places=2)] = Field(default=0)
     lokacija_id: Optional[int] = Field(default=None, foreign_key="lokacija.id")
 
+    lokacija: Lokacija = Relationship(back_populates="nepremicnine")
+    oglasi: list["Oglas"] = Relationship(back_populates="nepremicnina")
+
 
 class Oglas(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -34,6 +42,9 @@ class Oglas(SQLModel, table=True):
     posredovanje: str
     nepremicnina_id: int = Field(foreign_key="nepremicnina.id")
     agencija_id: int = Field(foreign_key="agencija.id")
+
+    nepremicnina: Nepremicnina = Relationship(back_populates="oglasi")
+    agencija: Agencija = Relationship(back_populates="oglasi")
 
 
 class OglasCena(SQLModel, table=True):
