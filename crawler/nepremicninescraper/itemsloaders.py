@@ -5,9 +5,10 @@ from scrapy.loader import ItemLoader
 class OglasLoader(ItemLoader):
     default_output_processor = TakeFirst()
     naslov_in = MapCompose(lambda x: x.strip())
-    referencna_st_in = MapCompose(lambda x: x.split("o")[-1])
+    referencna_st_in = MapCompose(lambda x: x.split("_")[-1].split("/")[0])
     # url_in = MapCompose(lambda x: 'https://www.nepremicnine.net' + x)
-    posredovanje_in = MapCompose(lambda x: x.split(":")[0])
+    posredovanje_in = MapCompose(lambda x: x.strip().split(":")[0])
+    vrsta_in = MapCompose(lambda x: x.split(":")[-1].split(",")[0].strip())
     cena_in = MapCompose(lambda x: x.split(
         "€")[0].replace('.', '').replace(',', '.').strip())
     agencija_in = MapCompose(lambda x: x.strip())

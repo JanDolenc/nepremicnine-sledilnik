@@ -21,6 +21,9 @@ class StringToNumberPipeline:
         if (adapter.get('velikost')):
             adapter['velikost'] = float(adapter['velikost'])
 
+        if (adapter.get('zemljisce')):
+            adapter['zemljisce'] = float(adapter['zemljisce'])
+
         if (adapter.get('leto_izgradnje')):
             adapter['leto_izgradnje'] = int(adapter['leto_izgradnje'])
 
