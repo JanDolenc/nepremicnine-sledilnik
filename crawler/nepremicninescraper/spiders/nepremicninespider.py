@@ -43,13 +43,13 @@ class NepremicninespiderSpider(scrapy.Spider):
                 'vrsta', 'div.property-details span.font-roboto ::text')
             oglas_item.add_css('tip', 'span.tipi ::text')
             oglas_item.add_css(
-                'nadstropje', 'div.property-details ul li:nth-of-type(3) ::text')
+                'nadstropje', 'div.property-details ul li:nth-of-type(3)')
             oglas_item.add_css(
-                'velikost', 'div.property-details ul li:nth-of-type(1) ::text')
+                'velikost', 'div.property-details ul li:nth-of-type(1)')
             oglas_item.add_css(
-                'leto_izgradnje', 'div.property-details ul li:nth-of-type(2) ::text')
+                'leto_izgradnje', 'div.property-details ul li:nth-of-type(2)')
             oglas_item.add_css(
-                'zemljisce', 'div.property-details ul li:nth-of-type(4) ::text')
+                'zemljisce', 'div.property-details ul li:nth-of-type(4)')
             oglas_item.add_value('regija', regija)
 
             yield oglas_item.load_item()
