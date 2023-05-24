@@ -8,7 +8,7 @@ class NepremicninespiderSpider(scrapy.Spider):
 
     def start_requests(self):
         if self.regija == 'test' and self.vrsta == 'test':
-            url = 'http://127.0.0.1:5501/test-index.html'
+            url = 'http://127.0.0.1:5501/test-index-new-h.html'
 
         else:
             url = f'https://www.nepremicnine.net/oglasi-prodaja/{self.regija}/{self.vrsta}/'
@@ -24,26 +24,32 @@ class NepremicninespiderSpider(scrapy.Spider):
         yield req
 
     def parse(self, response):
-        oglasi_on_page = response.css('div.oglas_container')
+        oglasi_on_page = response.css('div.property-box')
         regija = response.css('div.ff_regija strong::text').get()
 
         # oglas_item = Oglas()
 
         for oglas in oglasi_on_page:
             oglas_item = OglasLoader(item=Oglas(), selector=oglas)
-            oglas_item.add_css('naslov', 'span.title ::text')
+            oglas_item.add_css('naslov', 'div.property-details a h2 ::text')
             oglas_item.add_css(
-                'referencna_st', 'div.oglas_container ::attr(id)')
-            oglas_item.add_css('url', 'div.oglas_container a::attr(href)')
-            oglas_item.add_css('posredovanje', 'span.posr ::text')
-            oglas_item.add_css('cena', 'span.cena ::text')
-            oglas_item.add_css('agencija', 'span.agencija ::text')
-            oglas_item.add_css('vrsta', 'span.vrsta ::text')
+                'referencna_st', 'div.property-details a::attr(href)')
+            oglas_item.add_css('url', 'div.property-details a::attr(href)')
+            oglas_item.add_css(
+                'posredovanje', 'div.property-details span.font-roboto ::text')
+            oglas_item.add_css('cena', 'div.property-details h6 ::text')
+            oglas_item.add_css('agencija', 'div.property-btn span span ::text')
+            oglas_item.add_css(
+                'vrsta', 'div.property-details span.font-roboto ::text')
             oglas_item.add_css('tip', 'span.tipi ::text')
-            oglas_item.add_css('nadstropje', 'span.nadstropje strong ::text')
-            oglas_item.add_css('velikost', 'span.velikost ::text')
-            oglas_item.add_css('leto_izgradnje', 'span.leto strong ::text')
-            oglas_item.add_css('zemljisce', 'span.zemljisce strong ::text')
+            oglas_item.add_css(
+                'nadstropje', 'div.property-details ul li:nth-of-type(3)')
+            oglas_item.add_css(
+                'velikost', 'div.property-details ul li:nth-of-type(1)')
+            oglas_item.add_css(
+                'leto_izgradnje', 'div.property-details ul li:nth-of-type(2)')
+            oglas_item.add_css(
+                'zemljisce', 'div.property-details ul li:nth-of-type(4)')
             oglas_item.add_value('regija', regija)
 
             yield oglas_item.load_item()

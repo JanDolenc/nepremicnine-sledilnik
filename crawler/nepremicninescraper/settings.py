@@ -63,7 +63,8 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "nepremicninescraper.pipelines.StringToNumberPipeline": 100,
+    "nepremicninescraper.pipelines.ValidateUlDataPipeline": 100,
+    "nepremicninescraper.pipelines.StringToNumberPipeline": 110,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
