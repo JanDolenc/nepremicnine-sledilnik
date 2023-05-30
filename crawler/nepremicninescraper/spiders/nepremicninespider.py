@@ -38,7 +38,8 @@ class NepremicninespiderSpider(scrapy.Spider):
             oglas_item.add_css(
                 'posredovanje', 'div.property-details span.font-roboto ::text')
             oglas_item.add_css('cena', 'div.property-details h6 ::text')
-            oglas_item.add_css('agencija', 'div.property-btn span span ::text')
+            oglas_item.add_css(
+                'agencija', 'meta[itemprop="name"]::attr(content)')
             oglas_item.add_css(
                 'vrsta', 'div.property-details span.font-roboto ::text')
             oglas_item.add_css('tip', 'span.tipi ::text')
