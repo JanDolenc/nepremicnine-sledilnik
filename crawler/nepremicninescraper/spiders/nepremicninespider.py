@@ -1,6 +1,14 @@
 import scrapy
+from scrapy.http import HtmlResponse
 from nepremicninescraper.items import Oglas
 from nepremicninescraper.itemsloaders import OglasLoader
+
+import json
+
+
+headers = {"Content-Type": "application/json"}
+
+localhost = "http://localhost:8191/v1"
 
 
 class NepremicninespiderSpider(scrapy.Spider):
@@ -13,19 +21,23 @@ class NepremicninespiderSpider(scrapy.Spider):
         else:
             url = f'https://www.nepremicnine.net/oglasi-prodaja/{self.regija}/{self.vrsta}/'
 
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
-            'Accept-language': 'en-GB,en;q=0.9,sl-SI;q=0.8,sl;q=0.7,la;q=0.6',
-            'Origin': 'https://nepremicnine.net',
-            'Referer': url,
+        body = {
+            "cmd": "request.get",
+            "url": url,
+            "maxTimeout": 60000
         }
 
-        req = scrapy.Request(url, headers=headers)
+        req = scrapy.Request(localhost, method='POST',
+                             body=json.dumps(body), headers=headers)
         yield req
 
     def parse(self, response):
-        oglasi_on_page = response.css('div.property-box')
-        regija = response.css('div.ff_regija strong::text').get()
+        response_in_json = response.json()
+        html_string = response_in_json['solution']['response']
+
+        html = HtmlResponse(url='', body=html_string, encoding='utf-8')
+        oglasi_on_page = html.css('div.property-box')
+        regija = html.css('div.ff_regija strong::text').get()
 
         # oglas_item = Oglas()
 
@@ -55,8 +67,10 @@ class NepremicninespiderSpider(scrapy.Spider):
 
             yield oglas_item.load_item()
 
-        next_page = response.css('a.next ::attr(href)').get()
+        next_page = html.css('a.next ::attr(href)').get()
 
         if next_page is not None:
             next_page_url = 'https://www.nepremicnine.net' + next_page
             # yield response.follow(next_page_url, callback=self.parse)
+            # working with flaresolverr
+            yield html.follow(localhost, method='POST', body=json.dumps({'cmd': 'request.get', 'url': next_page_url, 'maxTimeout': 60000}), headers=headers,  callback=self.parse)
