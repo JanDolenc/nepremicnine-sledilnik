@@ -11,3 +11,4 @@ class OglasLoader(ItemLoader):
     cena_in = MapCompose(lambda x: x.split(
         "€")[0].replace('.', '').replace(',', '.').strip())
     agencija_in = MapCompose(lambda x: x.strip())
+    oglas_na_strani_in = MapCompose(lambda x: x.split('/')[-2])

@@ -40,6 +40,7 @@ class NepremicninespiderSpider(scrapy.Spider):
             html = HtmlResponse(url='', body=html_string, encoding='utf-8')
             oglasi_on_page = html.css('div.property-box')
             regija = html.css('div.ff_regija strong::text').get()
+            next_page = html.css('a.next ::attr(href)').get()
 
             # oglas_item = Oglas()
             for oglas in oglasi_on_page:
@@ -66,10 +67,9 @@ class NepremicninespiderSpider(scrapy.Spider):
                 oglas_item.add_css(
                     'zemljisce', 'div.property-details ul li:nth-of-type(4)')
                 oglas_item.add_value('regija', regija)
+                oglas_item.add_value('oglas_na_strani', next_page)
 
                 yield oglas_item.load_item()
-
-            next_page = html.css('a.next ::attr(href)').get()
 
             if next_page is not None:
                 next_page_url = 'https://www.nepremicnine.net' + next_page

@@ -81,6 +81,25 @@ class ValidateUlDataPipeline:
         return cleaned_data
 
 
+class AdOnPagePipeline:
+    last_page: Optional[int] = None
+
+    def process_item(self, item, spider):
+        if 'oglas_na_strani' in item:
+            value: str = item['oglas_na_strani']
+            if value:
+                self.last_page = current_page = int(value)
+                # we receive the next page number so we subtract
+                current_page -= 1
+        else:
+            # the last item doesn't have field oglas_na_strani. Next page link can't be selected because there isn't one so this field is empty at the items on the last page.
+            if self.last_page:
+                current_page = self.last_page
+
+        item['oglas_na_strani'] = current_page
+        return item
+
+
 class StringToNumberPipeline:
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)

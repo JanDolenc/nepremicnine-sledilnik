@@ -68,6 +68,7 @@ DOWNLOADER_MIDDLEWARES = {
 ITEM_PIPELINES = {
     "nepremicninescraper.pipelines.ValidateUlDataPipeline": 100,
     "nepremicninescraper.pipelines.StringToNumberPipeline": 110,
+    "nepremicninescraper.pipelines.AdOnPagePipeline": 120,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
