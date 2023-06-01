@@ -17,6 +17,8 @@ class NepremicninespiderSpider(scrapy.Spider):
     def start_requests(self):
         if self.regija == 'test' and self.vrsta == 'test':
             url = 'http://127.0.0.1:5501/test-index-new-h.html'
+            # oglasi z največ m2 padajoče
+            # url = 'https://www.nepremicnine.net/oglasi-prodaja/hisa/?s=14'
 
         else:
             url = f'https://www.nepremicnine.net/oglasi-prodaja/{self.regija}/{self.vrsta}/'

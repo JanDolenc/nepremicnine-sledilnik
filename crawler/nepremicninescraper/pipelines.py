@@ -76,7 +76,8 @@ class ValidateUlDataPipeline:
         return item
 
     def remove_unit_and_change_dec_separator(self, data: str) -> str:
-        cleaned_data = data.replace(' m', '').replace(',', '.')
+        cleaned_data = data.replace(' m', '').replace(
+            '.', '').replace(',', '.')
 
         return cleaned_data
 
