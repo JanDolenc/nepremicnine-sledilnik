@@ -95,8 +95,10 @@ class NepremicninescraperDownloaderMiddleware:
         # - return a Response object
         # - return a Request object
         # - or raise IgnoreRequest
-        print("THIS IS RESPONSE ---------->")
-        print(response.text)
+
+        # FOR DEBUGING - uncomment these two lines below if you want to see the response printed in the terminal
+        # print("THIS IS RESPONSE ---------->")
+        # print(response.text)
         return response
 
     def process_exception(self, request, exception, spider):
