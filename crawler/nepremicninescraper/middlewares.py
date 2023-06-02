@@ -9,6 +9,14 @@ from scrapy import signals
 from itemadapter import is_item, ItemAdapter
 
 
+class ShowRequestDetailsMiddleware:
+    def process_request(self, request, spider):
+        print(' ')
+        print(f'REQUEST HEADERS --->: {request.headers}')
+        print(f'Request URL: {request.url}')
+        print(' ')
+
+
 class NepremicninescraperSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
@@ -87,6 +95,10 @@ class NepremicninescraperDownloaderMiddleware:
         # - return a Response object
         # - return a Request object
         # - or raise IgnoreRequest
+
+        # FOR DEBUGING - uncomment these two lines below if you want to see the response printed in the terminal
+        # print("THIS IS RESPONSE ---------->")
+        # print(response.text)
         return response
 
     def process_exception(self, request, exception, spider):

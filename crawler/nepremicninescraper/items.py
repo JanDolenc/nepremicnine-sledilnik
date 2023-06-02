@@ -20,3 +20,4 @@ class Oglas(scrapy.Item):
     leto_izgradnje = scrapy.Field()
     zemljisce = scrapy.Field()
     regija = scrapy.Field()
+    oglas_na_strani = scrapy.Field()
