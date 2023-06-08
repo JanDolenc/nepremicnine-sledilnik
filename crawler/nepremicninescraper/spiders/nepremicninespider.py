@@ -9,7 +9,8 @@ from nepremicninescraper.itemsloaders import OglasLoader
 class NepremicninespiderSpider(scrapy.Spider):
     name = "nepremicninespider"
 
-    flaresolverr_url = "http://localhost:8191/v1"
+    # v url namesto ip-ja vsebuje ime containerja na katerega se povezujemo - flaresolverr
+    flaresolverr_url = "http://flaresolverr:8191/v1"
     headers = {"Content-Type": "application/json"}
 
     def start_requests(self):

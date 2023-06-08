@@ -1,0 +1,7 @@
+**/*.pyc
+**/*.json
+**/*.log
+**/.python-version
+**/*Makefile
+**/*Dockerfile
+**/*.dockerignore
