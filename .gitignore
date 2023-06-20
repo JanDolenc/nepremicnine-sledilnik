@@ -12,3 +12,7 @@
 
 # Ignore Pyenv virtual env file
 *.python-version
+
+# Ignore .env file
+*.env*
+!.env.example

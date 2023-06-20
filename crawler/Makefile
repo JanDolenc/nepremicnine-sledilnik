@@ -12,7 +12,7 @@ crawler-build:
 	docker build . -t nsledilnik/crawler:py3.11.3-alpine
 
 crawler-run:
-	docker run -t -d --name crawler --network=flaresolverr-test_default nsledilnik/crawler:py3.11.3-alpine
+	docker run -t -d --name crawler --network=crawler_default nsledilnik/crawler:py3.11.3-alpine
 
 crawler-stop:
 	docker rm -f crawler
@@ -21,4 +21,8 @@ crawler-terminal:
 	docker exec -it crawler sh
 
 crawler-scrape:
-	docker exec -d crawler scrapy crawl nepremicninespider -a regija=podravska -a vrsta=hisa -O data-podravska-h.json  
+	docker exec -d crawler scrapy crawl nepremicninespider -a regija=podravska -a vrsta=hisa -O data-podravska-h-$$(date +"%d-%m-%Y").json  
+
+crawler-copy-result:
+	docker cp crawler:/usr/src/crawler/data-podravska-h-08-06-2023.json ./test/
+

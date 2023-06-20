@@ -5,3 +5,4 @@
 **/*Makefile
 **/*Dockerfile
 **/*.dockerignore
+**/*docker-compose.yaml
