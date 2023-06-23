@@ -94,10 +94,10 @@ echo " "
 echo "Setup Docker"
 echo "----------------------------"
 
-cd /home/nsledilnik/crawler
+cd /home/nepremicnine-sledilnik/crawler
 
 # Start the containers
-docker compose up -d  
+docker compose --env-file ./../.env up -d  
 
 # Wait for the containers to start up
 while [ "$(docker ps | grep crawler | awk '{print $7}')" != "Up" ]; do
@@ -108,7 +108,7 @@ done
 echo "READYYYY"
 
 # Output logs from flaresolverr container into a file
-docker logs -f flaresolverr &> /home/nsledilnik/logs/flaresolverr/flare-${regija_acronym}-${vrsta_acronym}-$(date +"%y-%m-%d").log &
+docker logs -f flaresolverr &> /home/nepremicnine-sledilnik/logs/flaresolverr/flare-${regija_acronym}-${vrsta_acronym}-$(date +"%y-%m-%d").log &
 
 # Step 4 - Run crawler 
 echo " "
@@ -130,10 +130,10 @@ echo "Copy files Docker -> host"
 echo "----------------------------"
 
 # Copy data - json file
-docker cp crawler:/usr/src/crawler/scraped-data/data-${regija_acronym}-${vrsta_acronym}-$(date +"%y-%m-%d").json /home/nsledilnik/crawler/scraped-data-host
+docker cp crawler:/usr/src/crawler/scraped-data/data-${regija_acronym}-${vrsta_acronym}-$(date +"%y-%m-%d").json /home/nepremicnine-sledilnik/crawler/scraped-data-host
 
 # Copy log file
-docker cp crawler:/usr/src/crawler/logs/scrapy-${regija_acronym}-${vrsta_acronym}-$(date +"%y-%m-%d").log /home/nsledilnik/logs/scrapy
+docker cp crawler:/usr/src/crawler/logs/scrapy-${regija_acronym}-${vrsta_acronym}-$(date +"%y-%m-%d").log /home/nepremicnine-sledilnik/logs/scrapy
 
 
 # Step 6 - Close docker - remove containers 
@@ -141,7 +141,7 @@ echo " "
 echo "Docker down"
 echo "----------------------------"
 
-docker compose down 
+docker compose --env-file ./../.env down 
 
 echo "Done - containers removed"
 
