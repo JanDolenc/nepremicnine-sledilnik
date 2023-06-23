@@ -62,9 +62,9 @@ echo "----------------------------"
 
 # Step 2a - Select random config
 # Define an array of strings
-### wg_configs=("wg0" "wg2" "wg3" "wg4" "wg5")
+wg_configs=("wg0" "wg1" "wg2" "wg3" "wg4" "wg5" "wg6" "wg7" "wg8" "wg9" "wg10")
 # Configs for testing
-wg_configs=("wg4" "wg4")
+#wg_configs=("wg6" "wg9" "wg10")
 
 # Generate a random index into the array
 random_index=$(shuf -i 0-$((${#wg_configs[@]}-1)) -n 1)
@@ -94,10 +94,26 @@ echo " "
 echo "Setup Docker"
 echo "----------------------------"
 
-cd /home/nepremicnine-sledilnik/crawler
+# Select which flaresolverr version to use
+flare_versions=("v3.2.1" "v3.2.0" "v3.1.2" "v3.1.1" )
+
+# Generate a random index into the array
+random_index_flare=$(shuf -i 0-$((${#flare_versions[@]}-1)) -n 1)
+
+# Get the value at the random index
+random_version=${flare_versions[$random_index_flare]}
+
+# Set variable with new random version in .env file
+cd /home/nepremicnine-sledilnik
+
+sed -i "s/FLARESOLVERR_VERSION=.*/FLARESOLVERR_VERSION=${random_version}/g" .env
+
+echo "Using flaresolverr version: ${random_version}"
 
 # Start the containers
-docker compose --env-file ./../.env up -d  
+cd /home/nepremicnine-sledilnik/crawler
+
+docker compose --env-file ./../.env up -d
 
 # Wait for the containers to start up
 while [ "$(docker ps | grep crawler | awk '{print $7}')" != "Up" ]; do
@@ -109,6 +125,7 @@ echo "READYYYY"
 
 # Output logs from flaresolverr container into a file
 docker logs -f flaresolverr &> /home/nepremicnine-sledilnik/logs/flaresolverr/flare-${regija_acronym}-${vrsta_acronym}-$(date +"%y-%m-%d").log &
+
 
 # Step 4 - Run crawler 
 echo " "
@@ -165,4 +182,3 @@ echo "Wireguard is switched off"
 # Finish
 echo ""
 echo "Job is finished! Time: $(date)"
-
