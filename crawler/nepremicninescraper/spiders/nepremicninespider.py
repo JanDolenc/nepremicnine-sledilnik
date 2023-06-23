@@ -9,7 +9,8 @@ from nepremicninescraper.itemsloaders import OglasLoader
 class NepremicninespiderSpider(scrapy.Spider):
     name = "nepremicninespider"
 
-    flaresolverr_url = "http://localhost:8191/v1"
+    # v url namesto ip-ja vsebuje ime containerja na katerega se povezujemo - flaresolverr
+    flaresolverr_url = "http://flaresolverr:8191/v1"
     headers = {"Content-Type": "application/json"}
 
     def start_requests(self):
@@ -23,7 +24,7 @@ class NepremicninespiderSpider(scrapy.Spider):
             'cmd': 'request.get',
             'session': 'scrapy-sess',
             'url': url,
-            'maxTimeout': 60000
+            'maxTimeout': 240000
         }
 
         req = scrapy.Request(self.flaresolverr_url, method='POST',
@@ -71,7 +72,7 @@ class NepremicninespiderSpider(scrapy.Spider):
             if next_page is not None:
                 next_page_url = 'https://www.nepremicnine.net' + next_page
 
-                yield html.follow(self.flaresolverr_url, method='POST', body=json.dumps({'cmd': 'request.get', 'session': 'scrapy-sess', 'url': next_page_url, 'maxTimeout': 60000}), headers=self.headers,  callback=self.parse)
+                yield html.follow(self.flaresolverr_url, method='POST', body=json.dumps({'cmd': 'request.get', 'session': 'scrapy-sess', 'url': next_page_url, 'maxTimeout': 240000}), headers=self.headers,  callback=self.parse)
             else:
                 yield scrapy.Request(self.flaresolverr_url, method='POST',
                                      body=json.dumps({'cmd': 'sessions.destroy', 'session': 'scrapy-sess'}), headers=self.headers)

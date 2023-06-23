@@ -1,0 +1,28 @@
+# Docker compose for running crawler
+services:
+  crawler:
+    image: ${CRAWLER_IMAGE}
+    container_name: crawler
+    tty: true
+    networks:
+      - nsledilnik-flaresolverr-net
+    volumes:
+      - nsledilnik-crawler-data:/usr/src/crawler
+    depends_on:
+      - flaresolverr
+    restart: unless-stopped
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:${FLARESOLVERR_VERSION}
+    container_name: flaresolverr
+    ports:
+      - "8191:8191"
+    networks:
+      - nsledilnik-flaresolverr-net
+    restart: unless-stopped
+
+networks:
+  nsledilnik-flaresolverr-net: {}
+
+volumes:
+  nsledilnik-crawler-data:
