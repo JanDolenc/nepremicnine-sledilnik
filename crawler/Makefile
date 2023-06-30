@@ -26,3 +26,8 @@ crawler-scrape:
 crawler-copy-result:
 	docker cp crawler:/usr/src/crawler/data-podravska-h-08-06-2023.json ./test/
 
+compose up:
+	docker compose --env-file ./../.env up -d
+
+compose down:
+	docker compose --env-file ./../.env down
