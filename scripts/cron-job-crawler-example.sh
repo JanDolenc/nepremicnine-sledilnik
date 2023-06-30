@@ -179,6 +179,14 @@ echo "---"
 echo "Wireguard is switched off"
 
 
+echo " "
+echo "Job summary"
+echo "----------------------------"
+echo "Regija:${1}"
+echo "Vrsta:${2}"
+echo "Wg config: ${random_config}"
+echo "Flaresolverr version: ${random_version}"
+
 # Finish
 echo ""
 echo "Job is finished! Time: $(date)"
