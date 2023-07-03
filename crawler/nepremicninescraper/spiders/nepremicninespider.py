@@ -24,7 +24,7 @@ class NepremicninespiderSpider(scrapy.Spider):
             'cmd': 'request.get',
             'session': 'scrapy-sess',
             'url': url,
-            'maxTimeout': 240000
+            'maxTimeout': 420000
         }
 
         req = scrapy.Request(self.flaresolverr_url, method='POST',
@@ -72,7 +72,7 @@ class NepremicninespiderSpider(scrapy.Spider):
             if next_page is not None:
                 next_page_url = 'https://www.nepremicnine.net' + next_page
 
-                yield html.follow(self.flaresolverr_url, method='POST', body=json.dumps({'cmd': 'request.get', 'session': 'scrapy-sess', 'url': next_page_url, 'maxTimeout': 240000}), headers=self.headers,  callback=self.parse)
+                yield html.follow(self.flaresolverr_url, method='POST', body=json.dumps({'cmd': 'request.get', 'session': 'scrapy-sess', 'url': next_page_url, 'maxTimeout': 420000}), headers=self.headers,  callback=self.parse)
             else:
                 yield scrapy.Request(self.flaresolverr_url, method='POST',
                                      body=json.dumps({'cmd': 'sessions.destroy', 'session': 'scrapy-sess'}), headers=self.headers)

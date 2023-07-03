@@ -6,8 +6,8 @@ services:
     tty: true
     networks:
       - nsledilnik-flaresolverr-net
-    volumes:
-      - nsledilnik-crawler-data:/usr/src/crawler
+    # volumes:
+    #   - nsledilnik-crawler-data:/usr/src/crawler
     depends_on:
       - flaresolverr
     restart: unless-stopped
@@ -23,6 +23,5 @@ services:
 
 networks:
   nsledilnik-flaresolverr-net: {}
-
-volumes:
-  nsledilnik-crawler-data:
+#volumes:
+#  nsledilnik-crawler-data:
