@@ -49,13 +49,13 @@ with open(folder_path + current_file, 'r') as current_json_file:
 
     with Session(engine) as session:
 
-        for ad in data_json:
+        for ad_json in data_json:
             # print('this is data_item', ad)
             # print()
 
             # check if the ad with ref_st already exists
             ad_w_ref_exists = session.exec(select(Oglas).where(
-                Oglas.referencna_st == ad.get('referencna_st'))).first()
+                Oglas.referencna_st == ad_json.get('referencna_st'))).first()
 
             """ print()
             print('THIS IS ad', ad_w_ref_exists)
@@ -66,23 +66,23 @@ with open(folder_path + current_file, 'r') as current_json_file:
 
                 # AGENCY - check if it exists
                 agency = session.exec(select(Agencija).where(
-                    Agencija.naziv == ad.get('agencija'))
+                    Agencija.naziv == ad_json.get('agencija'))
                 ).first()
 
                 # agency does NOT exists insert it
                 if agency is None:
-                    agency = Agencija(naziv=ad.get('agencija'))
+                    agency = Agencija(naziv=ad_json.get('agencija'))
                     # session.add(agency)
                     # session.commit()
 
                 # LOCATION - check if it exists
                 location = session.exec(select(Lokacija).where(
-                    Lokacija.regija == ad.get('regija'))
+                    Lokacija.regija == ad_json.get('regija'))
                 ).first()
 
                 # location does NOT exists insert it
                 if location is None:
-                    location = Lokacija(regija=ad.get('regija'))
+                    location = Lokacija(regija=ad_json.get('regija'))
                     session.add(location)
                     session.commit()
 
@@ -90,12 +90,12 @@ with open(folder_path + current_file, 'r') as current_json_file:
 
                 # NEPREMICNINA - check if it exists
                 property = session.exec(select(Nepremicnina).where(
-                    Nepremicnina.vrsta == ad.get('vrsta'),
-                    Nepremicnina.tip == ad.get('tip'),
-                    Nepremicnina.nadstropje == ad.get('nadstropje'),
-                    Nepremicnina.velikost == ad.get('velikost'),
-                    Nepremicnina.leto_izgradnje == ad.get('leto_izgradnje'),
-                    Nepremicnina.zemljisce == ad.get('zemljisce'),
+                    Nepremicnina.vrsta == ad_json.get('vrsta'),
+                    Nepremicnina.tip == ad_json.get('tip'),
+                    Nepremicnina.nadstropje == ad_json.get('nadstropje'),
+                    Nepremicnina.velikost == ad_json.get('velikost'),
+                    Nepremicnina.leto_izgradnje == ad_json.get('leto_izgradnje'),
+                    Nepremicnina.zemljisce == ad_json.get('zemljisce'),
                     Nepremicnina.lokacija == Lokacija(
                         id=location.id, regija=location.regija),
                 )
@@ -106,28 +106,42 @@ with open(folder_path + current_file, 'r') as current_json_file:
 
                 # if property with exactly the same params does NOT exist - insert it
                 if property is None:
-                    property = Nepremicnina(vrsta=ad.get('vrsta'), tip=ad.get('tip'), nadstropje=ad.get('nadstropje'), velikost=ad.get(
-                        'velikost'), leto_izgradnje=ad.get('leto_izgradnje'), zemljisce=ad.get('zemljisce'), lokacija_id=location.id)
+                    property = Nepremicnina(vrsta=ad_json.get('vrsta'), tip=ad_json.get('tip'), nadstropje=ad_json.get('nadstropje'), velikost=ad_json.get(
+                        'velikost'), leto_izgradnje=ad_json.get('leto_izgradnje'), zemljisce=ad_json.get('zemljisce'), lokacija_id=location.id)
                     session.add(property)
                     session.commit()
 
-                    session.refresh(location)
-                    session.refresh(property)
+                    #session.refresh(location)
+                    #session.refresh(property)
                     print('INSERT it AND REFRESH IITT')
 
                 print()
                 print('this LocaTION', location)
                 print()
+                print('THIS IS AGENcy', agency)
+                print()
                 print('THIS IS PrOPertY', property)
                 print()
+                print()
 
-                # insert oglas
+                # OGLAS - w this ref_st does NOT exists - insert it
+                ad: Oglas = Oglas(
+                    referencna_st=ad_json.get('referencna_st'), naslov=ad_json.get('naslov'), url=ad_json.get('url'), posredovanje=ad_json.get('posredovanje'), nepremicnina_id=property.id, agencija_id=agency.id)
+                print('THIS is AD before commit', ad)
+                session.add(ad)
+                session.commit()
+
+                print('THIS is AD AFTERR commit', ad)
+
 
                 # insert oglas_cena
 
             # if ad with ref_st does exists
             if ad_w_ref_exists is not None:
 
+                print()
+                print('AD W ref EXISTS', ad_w_ref_exists)
+                print()
                 print()
 
             # model for lokacija
