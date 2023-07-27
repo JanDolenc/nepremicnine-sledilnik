@@ -83,12 +83,43 @@ with open(folder_path + current_file, 'r') as current_json_file:
                 # location does NOT exists insert it
                 if location is None:
                     location = Lokacija(regija=ad.get('regija'))
-                    # session.add(location)
-                    # session.commit()
+                    session.add(location)
+                    session.commit()
 
                     # session.refresh(location)
 
-                # insert nepremicnino
+                # NEPREMICNINA - check if it exists
+                property = session.exec(select(Nepremicnina).where(
+                    Nepremicnina.vrsta == ad.get('vrsta'),
+                    Nepremicnina.tip == ad.get('tip'),
+                    Nepremicnina.nadstropje == ad.get('nadstropje'),
+                    Nepremicnina.velikost == ad.get('velikost'),
+                    Nepremicnina.leto_izgradnje == ad.get('leto_izgradnje'),
+                    Nepremicnina.zemljisce == ad.get('zemljisce'),
+                    Nepremicnina.lokacija == Lokacija(
+                        id=location.id, regija=location.regija),
+                )
+                ).first()
+
+                print()
+                print('VALUE OF property BEFORE iff', property)
+
+                # if property with exactly the same params does NOT exist - insert it
+                if property is None:
+                    property = Nepremicnina(vrsta=ad.get('vrsta'), tip=ad.get('tip'), nadstropje=ad.get('nadstropje'), velikost=ad.get(
+                        'velikost'), leto_izgradnje=ad.get('leto_izgradnje'), zemljisce=ad.get('zemljisce'), lokacija_id=location.id)
+                    session.add(property)
+                    session.commit()
+
+                    session.refresh(location)
+                    session.refresh(property)
+                    print('INSERT it AND REFRESH IITT')
+
+                print()
+                print('this LocaTION', location)
+                print()
+                print('THIS IS PrOPertY', property)
+                print()
 
                 # insert oglas
 

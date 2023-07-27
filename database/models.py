@@ -27,7 +27,7 @@ class Nepremicnina(SQLModel, table=True):
     velikost: condecimal(max_digits=10, decimal_places=2)
     leto_izgradnje: Optional[int]
     zemljisce: Optional[condecimal(
-        max_digits=10, decimal_places=2)] = Field(default=0)
+        max_digits=10, decimal_places=2)] = Field(default=None)
     lokacija_id: Optional[int] = Field(default=None, foreign_key="lokacija.id")
 
     lokacija: Lokacija = Relationship(back_populates="nepremicnine")
