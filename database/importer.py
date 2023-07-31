@@ -1,10 +1,12 @@
 import os
+import re
+import pytz
 from datetime import datetime
 import fnmatch
 import json
 from sqlmodel import Session, select
 
-from models import Nepremicnina, Oglas, Lokacija, Agencija
+from models import Nepremicnina, Oglas, OglasCena, Lokacija, Agencija
 from database import create_db_and_tables, engine
 
 print('---------------')
@@ -133,8 +135,21 @@ with open(folder_path + current_file, 'r') as current_json_file:
 
                 print('THIS is AD AFTERR commit', ad)
 
+                # OGLAS_CENA - insert oglas_cena
 
-                # insert oglas_cena
+                # get the date (string "YY-MM-DD") out of the current file name using regex
+                match = re.search(r'\d{2}-\d{2}-\d{2}', current_file)
+                
+                # get utc timezone (int) out of string "YY-MM-DD"
+                file_ts = int(pytz.utc.localize(datetime.strptime(match.group(), '%y-%m-%d')).timestamp())
+
+
+                property_price: OglasCena = OglasCena(oglas_id=ad.id, ts=file_ts, cena=ad_json.get('cena'))
+                session.add(property_price)
+                session.commit()
+                print('this is property PRICEE', property_price)
+                print()
+
 
             # if ad with ref_st does exists
             if ad_w_ref_exists is not None:
