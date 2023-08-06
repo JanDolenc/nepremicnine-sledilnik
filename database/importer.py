@@ -4,9 +4,11 @@ import pytz
 from datetime import datetime
 import fnmatch
 import json
+import decimal
 from sqlmodel import Session, select
+import sqlalchemy.orm.state
 
-from models import Nepremicnina, Oglas, OglasCena, Lokacija, Agencija
+from models import Oglas, OglasCena
 from database import create_db_and_tables, engine
 
 print('---------------')
@@ -49,115 +51,105 @@ print('importing file:', current_file)
 with open(folder_path + current_file, 'r') as current_json_file:
     data_json = json.load(current_json_file)
 
+    # get the date (string "YY-MM-DD") out of the current file name using regex
+    match = re.search(r'\d{2}-\d{2}-\d{2}', current_file)
+
+    # get utc timezone (int) out of string "YY-MM-DD"
+    file_ts = int(pytz.utc.localize(datetime.strptime(
+        match.group(), '%y-%m-%d')).timestamp())
+
     with Session(engine) as session:
 
         for ad_json in data_json:
-            # print('this is data_item', ad)
-            # print()
 
             # check if the ad with ref_st already exists
-            ad_w_ref_exists = session.exec(select(Oglas).where(
+            ad = session.exec(select(Oglas).where(
                 Oglas.referencna_st == ad_json.get('referencna_st'))).first()
 
             """ print()
-            print('THIS IS ad', ad_w_ref_exists)
+            print('THIS IS ad', ad)
             print() """
 
             # if ad with this ref_st does NOT exists
-            if ad_w_ref_exists is None:
-
-                # AGENCY - check if it exists
-                agency = session.exec(select(Agencija).where(
-                    Agencija.naziv == ad_json.get('agencija'))
-                ).first()
-
-                # agency does NOT exists insert it
-                if agency is None:
-                    agency = Agencija(naziv=ad_json.get('agencija'))
-                    # session.add(agency)
-                    # session.commit()
-
-                # LOCATION - check if it exists
-                location = session.exec(select(Lokacija).where(
-                    Lokacija.regija == ad_json.get('regija'))
-                ).first()
-
-                # location does NOT exists insert it
-                if location is None:
-                    location = Lokacija(regija=ad_json.get('regija'))
-                    session.add(location)
-                    session.commit()
-
-                    # session.refresh(location)
-
-                # NEPREMICNINA - check if it exists
-                property = session.exec(select(Nepremicnina).where(
-                    Nepremicnina.vrsta == ad_json.get('vrsta'),
-                    Nepremicnina.tip == ad_json.get('tip'),
-                    Nepremicnina.nadstropje == ad_json.get('nadstropje'),
-                    Nepremicnina.velikost == ad_json.get('velikost'),
-                    Nepremicnina.leto_izgradnje == ad_json.get('leto_izgradnje'),
-                    Nepremicnina.zemljisce == ad_json.get('zemljisce'),
-                    Nepremicnina.lokacija == Lokacija(
-                        id=location.id, regija=location.regija),
-                )
-                ).first()
-
-                print()
-                print('VALUE OF property BEFORE iff', property)
-
-                # if property with exactly the same params does NOT exist - insert it
-                if property is None:
-                    property = Nepremicnina(vrsta=ad_json.get('vrsta'), tip=ad_json.get('tip'), nadstropje=ad_json.get('nadstropje'), velikost=ad_json.get(
-                        'velikost'), leto_izgradnje=ad_json.get('leto_izgradnje'), zemljisce=ad_json.get('zemljisce'), lokacija_id=location.id)
-                    session.add(property)
-                    session.commit()
-
-                    #session.refresh(location)
-                    #session.refresh(property)
-                    print('INSERT it AND REFRESH IITT')
-
-                print()
-                print('this LocaTION', location)
-                print()
-                print('THIS IS AGENcy', agency)
-                print()
-                print('THIS IS PrOPertY', property)
-                print()
-                print()
+            if ad is None:
 
                 # OGLAS - w this ref_st does NOT exists - insert it
                 ad: Oglas = Oglas(
-                    referencna_st=ad_json.get('referencna_st'), naslov=ad_json.get('naslov'), url=ad_json.get('url'), posredovanje=ad_json.get('posredovanje'), nepremicnina_id=property.id, agencija_id=agency.id)
+                    referencna_st=ad_json.get('referencna_st'), naslov=ad_json.get('naslov'), url=ad_json.get('url'), posredovanje=ad_json.get('posredovanje'), agencija=ad_json.get('agencija'), vrsta=ad_json.get('vrsta'), tip=ad_json.get('tip'), nadstropje=ad_json.get('nadstopje'), velikost=ad_json.get('velikost'), leto_izgradnje=ad_json.get('leto_izgradnje'), zemljisce=ad_json.get('zemljisce'), regija=ad_json.get('regija'))
                 print('THIS is AD before commit', ad)
                 session.add(ad)
                 session.commit()
 
-                print('THIS is AD AFTERR commit', ad)
-
                 # OGLAS_CENA - insert oglas_cena
 
-                # get the date (string "YY-MM-DD") out of the current file name using regex
-                match = re.search(r'\d{2}-\d{2}-\d{2}', current_file)
-                
-                # get utc timezone (int) out of string "YY-MM-DD"
-                file_ts = int(pytz.utc.localize(datetime.strptime(match.group(), '%y-%m-%d')).timestamp())
-
-
-                property_price: OglasCena = OglasCena(oglas_id=ad.id, ts=file_ts, cena=ad_json.get('cena'))
-                session.add(property_price)
+                ad_price: OglasCena = OglasCena(
+                    oglas_id=ad.id, ts=file_ts, cena=ad_json.get('cena'))
+                session.add(ad_price)
                 session.commit()
-                print('this is property PRICEE', property_price)
+                print('this is ad PRICEE', ad_price)
                 print()
-
 
             # if ad with ref_st does exists
-            if ad_w_ref_exists is not None:
+            if ad is not None:
+
+                # UPDATE oglas data if necessary
+                print('ADD BEFORE LOOP', ad.zemljisce)
+                for key, item in ad:
+                    if key != 'id' and not isinstance(item, sqlalchemy.orm.state.InstanceState):
+
+                        # convert floats to decimal
+                        if isinstance(ad_json.get(key), float):
+                            ad_json[key] = decimal.Decimal(
+                                str(ad_json.get(key))).quantize(decimal.Decimal('.01'))
+
+                        if item != ad_json.get(key):
+
+                            print('values ARE NOT the same', item, type(item),
+                                  'ad-json', ad_json.get(key), type(ad_json.get(key)))
+
+                            setattr(ad, key, ad_json.get(key))
+
+                session.add(ad)
+                session.commit()
 
                 print()
-                print('AD W ref EXISTS', ad_w_ref_exists)
+                print('AD AFTER', ad.zemljisce)
+                print()
+
+                # OGLAS_CENA - update ad price (oglas_cena) if necessary
+                # ad_price = session.exec(select(OglasCena).where(
+                #    OglasCena.oglas_id == ad.id).order_by(OglasCena.ts.desc()).limit(1)).all()
+
+                ad_price = session.exec(select(OglasCena).where(
+                    OglasCena.oglas_id == ad.id).order_by(OglasCena.ts.desc())).first()
+
                 print()
                 print()
+                print()
+                print('this is the item LATEST PRICE', ad_price,
+                      datetime.fromtimestamp(ad_price.ts))
+                print()
+                print()
+                print()
+
+                result = file_ts - ad_price.ts
+                print('resULT', result)
+
+                ad_json['cena'] = decimal.Decimal(
+                    str(ad_json.get('cena'))).quantize(decimal.Decimal('.01'))
+
+                # update price if it's changed or older than 5 days = 432000 seconds - every other job
+                if ad_price.cena != ad_json.get('cena') or file_ts - ad_price.ts > 432000:
+                    print('the PRICE IS NOT the same')
+                    ad_price = OglasCena(
+                        oglas_id=ad.id, ts=file_ts, cena=ad_json.get('cena'))
+
+                    session.add(ad_price)
+                    session.commit()
+
+                print()
+                print('the new PRICE IS', ad_price,
+                      datetime.fromtimestamp(ad_price.ts), 'type', type(ad_price.cena))
 
             # model for lokacija
             # location = Lokacija(naziv=ad['regija'])
