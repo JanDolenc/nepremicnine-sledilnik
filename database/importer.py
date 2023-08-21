@@ -89,3 +89,70 @@ for current_file in files_for_import:
                     print()
 
                 # if ad with ref_st does exists
+                if ad is not None:
+
+                    # UPDATE oglas data if necessary
+                    print('ADD BEFORE LOOP', ad.zemljisce)
+                    # check value of every item of ad stored in db
+                    for key, item in ad:
+                        if key != 'id' and not isinstance(item, sqlalchemy.orm.state.InstanceState):
+
+                            # convert floats to decimal
+                            if isinstance(ad_json.get(key), float):
+                                ad_json[key] = decimal.Decimal(
+                                    str(ad_json.get(key))).quantize(decimal.Decimal('.01'))
+
+                            # store new value if the db value is out of date
+                            if item != ad_json.get(key):
+
+                                print('values ARE NOT the same', item, type(item),
+                                      'ad-json', ad_json.get(key), type(ad_json.get(key)))
+
+                                setattr(ad, key, ad_json.get(key))
+
+                    if session.is_modified(ad):
+                        session.add(ad)
+                        session.commit()
+                        print()
+                        print('THe commit JUST RUNEED')
+
+                    print()
+                    print()
+                    print('AD AFTER', ad.zemljisce)
+                    print()
+
+                    # OGLAS_CENA - update (oglas_cena) if necessary
+
+                    # ad_price = session.exec(select(OglasCena).where(
+                    #    OglasCena.oglas_id == ad.id).order_by(OglasCena.ts.desc()).limit(1)).all()
+
+                    ad_price = session.exec(select(OglasCena).where(
+                        OglasCena.oglas_id == ad.id).order_by(OglasCena.ts.desc())).first()
+
+                    print()
+                    print()
+                    print()
+                    print('this is the item LATEST PRICE', ad_price,
+                          datetime.fromtimestamp(ad_price.ts))
+                    print()
+                    print()
+                    print()
+
+                    result = file_ts - ad_price.ts
+                    print('resULT', result)
+
+                    ad_json['cena'] = decimal.Decimal(
+                        str(ad_json.get('cena'))).quantize(decimal.Decimal('.01'))
+
+                    # update price if it's changed or older than 5 days = 432000 seconds - every other job
+                    if ad_price.cena != ad_json.get('cena') or file_ts - ad_price.ts > 432000:
+                        print('the PRICE IS NOT the same')
+                        ad_price = OglasCena(
+                            oglas_id=ad.id, ts=file_ts, cena=ad_json.get('cena'))
+
+                        session.add(ad_price)
+                        session.commit()
+
+                    print()
+                    print('the new PRICE IS', ad_price,
+                          datetime.fromtimestamp(ad_price.ts), 'type', type(ad_price.cena))
