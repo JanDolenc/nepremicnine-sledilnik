@@ -2,6 +2,7 @@ import os
 import sys
 import re
 import pytz
+import shutil
 from datetime import datetime
 import fnmatch
 import json
@@ -61,6 +62,9 @@ for current_file in files_for_import:
         # get utc timezone (int) out of string "YY-MM-DD"
         file_ts = int(pytz.utc.localize(datetime.strptime(
             match.group(), '%y-%m-%d')).timestamp())
+
+        # count how many times the loop for items in json file executes
+        insert_success_count: int = 0
 
         with Session(engine) as session:
 
@@ -156,3 +160,16 @@ for current_file in files_for_import:
                     print()
                     print('the new PRICE IS', ad_price,
                           datetime.fromtimestamp(ad_price.ts), 'type', type(ad_price.cena))
+                insert_success_count = insert_success_count + 1
+
+    ads_in_file_count: int = len(data_json)
+    archive_folder_path = '../crawler/scraped-data-host/start/archive/'
+
+    # move current file to archive folder and renamed it to -imported.json
+    # do this only if it was successful import
+    if ads_in_file_count != insert_success_count:
+        sys.exit('\n ERROR, IMPORTER EXITED! Something went wrong when inserting / updating ' + str(current_file) +
+                 '. Please manually check how many items (ads) where (not) inserted. The loop that inserts items have runned ' + str(insert_success_count) + ' times before failing. If possible try reverting db and try again.')
+    else:
+        shutil.move(folder_path + current_file, archive_folder_path +
+                    current_file[:-5] + '-imported.json')
