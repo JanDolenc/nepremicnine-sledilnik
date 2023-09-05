@@ -22,21 +22,29 @@ print()
 
 print('LOOKING FOR FILES TO IMPORT')
 print('---------------')
-print('Found these files:')
 
 files_count: int = 0
 files_for_import: list[str] = []
 folder_path: str = '../crawler/scraped-data-host/start/'
+
 for filename in os.listdir(folder_path):
     if fnmatch.fnmatch(filename, 'data-*.json') and not fnmatch.fnmatch(filename, '*imported*'):
-        print(filename)
-        files_count += 1
-        files_for_import.append(filename)
 
+        # get the date (string "YY-MM-DD") out of the current file name using regex
+        match = re.search(r'\d{2}-\d{2}-\d{2}', filename)
+
+        if match:
+            files_for_import.append((filename, match.group(0)))
+            files_count += 1
+
+files_for_import = sorted(files_for_import, key=lambda x: x[1])
+
+
+print('Found these files:')
+for filename, file_date in files_for_import:
+    print(filename, file_date)
 
 print(files_count, 'files total')
-print()
-print(files_for_import)
 print()
 
 if not files_for_import:
@@ -50,18 +58,15 @@ create_db_and_tables()
 print('STARTING TO IMPORT')
 print('---------------')
 
-for current_file in files_for_import:
+for current_file, file_date in files_for_import:
     print('importing file:', current_file)
 
     with open(folder_path + current_file, 'r') as current_json_file:
         data_json = json.load(current_json_file)
 
-        # get the date (string "YY-MM-DD") out of the current file name using regex
-        match = re.search(r'\d{2}-\d{2}-\d{2}', current_file)
-
         # get utc timezone (int) out of string "YY-MM-DD"
-        file_ts = int(pytz.utc.localize(datetime.strptime(
-            match.group(), '%y-%m-%d')).timestamp())
+        file_ts = int(pytz.utc.localize(
+            datetime.strptime(file_date, '%y-%m-%d')).timestamp())
 
         # count how many times the loop for items in json file executes
         insert_success_count: int = 0
@@ -71,34 +76,42 @@ for current_file in files_for_import:
             for ad_json in data_json:
 
                 # check if the ad with ref_st already exists
-                ad = session.exec(select(Oglas).where(
+                ad_db = session.exec(select(Oglas).where(
                     Oglas.referencna_st == ad_json.get('referencna_st'))).first()
 
+                print()
+                print('This is loop run number ',
+                      insert_success_count, ' ----------------------')
+                print('Does AD exists?', ad_db)
+
                 # if ad with this ref_st does NOT exists
-                if ad is None:
+                if ad_db is None:
 
                     # OGLAS - w this ref_st does NOT exists - insert it
                     ad: Oglas = Oglas(
-                        referencna_st=ad_json.get('referencna_st'), naslov=ad_json.get('naslov'), url=ad_json.get('url'), posredovanje=ad_json.get('posredovanje'), agencija=ad_json.get('agencija'), vrsta=ad_json.get('vrsta'), tip=ad_json.get('tip'), nadstropje=ad_json.get('nadstopje'), velikost=ad_json.get('velikost'), leto_izgradnje=ad_json.get('leto_izgradnje'), zemljisce=ad_json.get('zemljisce'), regija=ad_json.get('regija'))
-                    print('THIS is AD before commit', ad)
+                        referencna_st=ad_json.get('referencna_st'), naslov=ad_json.get('naslov'), url=ad_json.get('url'), posredovanje=ad_json.get('posredovanje'), agencija=ad_json.get('agencija'), vrsta=ad_json.get('vrsta'), tip=ad_json.get('tip'), nadstropje=ad_json.get('nadstropje'), velikost=ad_json.get('velikost'), leto_izgradnje=ad_json.get('leto_izgradnje'), zemljisce=ad_json.get('zemljisce'), regija=ad_json.get('regija'))
+                    print('AD does NOT exists. This will be inserted', ad)
                     session.add(ad)
                     session.commit()
 
                     # OGLAS_CENA - insert oglas_cena
                     ad_price: OglasCena = OglasCena(
                         oglas_id=ad.id, ts=file_ts, cena=ad_json.get('cena'))
+
+                    print(
+                        'this is ad PRICEE that doesnt exits yet -> will be inserted', ad_price)
                     session.add(ad_price)
                     session.commit()
-                    print('this is ad PRICEE', ad_price)
                     print()
 
                 # if ad with ref_st does exists
-                if ad is not None:
+                # print()
+                # print('ad before ad is not none check (updating ad)', ad_db)
+                if ad_db is not None:
 
                     # UPDATE oglas data if necessary
-                    print('ADD BEFORE LOOP', ad.zemljisce)
                     # check value of every item of ad stored in db
-                    for key, item in ad:
+                    for key, item in ad_db:
                         if key != 'id' and not isinstance(item, sqlalchemy.orm.state.InstanceState):
 
                             # convert floats to decimal
@@ -112,17 +125,20 @@ for current_file in files_for_import:
                                 print('values ARE NOT the same', item, type(item),
                                       'ad-json', ad_json.get(key), type(ad_json.get(key)))
 
-                                setattr(ad, key, ad_json.get(key))
+                                setattr(ad_db, key, ad_json.get(key))
 
-                    if session.is_modified(ad):
-                        session.add(ad)
+                    if session.is_modified(ad_db):
+                        print('Ad does exits and it was updated', ad_db)
+                        session.add(ad_db)
                         session.commit()
                         print()
                         print('THe commit JUST RUNEED')
+                    else:
+                        print()
+                        print('AD exists but was not updated')
 
                     print()
                     print()
-                    print('AD AFTER', ad.zemljisce)
                     print()
 
                     # OGLAS_CENA - update (oglas_cena) if necessary
@@ -131,12 +147,12 @@ for current_file in files_for_import:
                     #    OglasCena.oglas_id == ad.id).order_by(OglasCena.ts.desc()).limit(1)).all()
 
                     ad_price = session.exec(select(OglasCena).where(
-                        OglasCena.oglas_id == ad.id).order_by(OglasCena.ts.desc())).first()
+                        OglasCena.oglas_id == ad_db.id).order_by(OglasCena.ts.desc())).first()
 
                     print()
                     print()
                     print()
-                    print('this is the item LATEST PRICE', ad_price,
+                    print('this is the item LATEST PRICE in db', ad_price,
                           datetime.fromtimestamp(ad_price.ts))
                     print()
                     print()
@@ -152,20 +168,23 @@ for current_file in files_for_import:
                     if ad_price.cena != ad_json.get('cena') or file_ts - ad_price.ts > 432000:
                         print('the PRICE IS NOT the same')
                         ad_price = OglasCena(
-                            oglas_id=ad.id, ts=file_ts, cena=ad_json.get('cena'))
+                            oglas_id=ad_db.id, ts=file_ts, cena=ad_json.get('cena'))
 
                         session.add(ad_price)
                         session.commit()
 
-                    print()
-                    print('the new PRICE IS', ad_price,
-                          datetime.fromtimestamp(ad_price.ts), 'type', type(ad_price.cena))
+                        print()
+                        print('the new PRICE IS', ad_price,
+                              datetime.fromtimestamp(ad_price.ts), 'type', type(ad_price.cena))
+                    else:
+                        print('THe price was not updateD')
+
                 insert_success_count = insert_success_count + 1
 
     ads_in_file_count: int = len(data_json)
     archive_folder_path = '../crawler/scraped-data-host/start/archive/'
 
-    # move current file to archive folder and renamed it to -imported.json
+    # move current file to archive folder and renamed it to *-imported.json
     # do this only if it was successful import
     if ads_in_file_count != insert_success_count:
         sys.exit('\n ERROR, IMPORTER EXITED! Something went wrong when inserting / updating ' + str(current_file) +
