@@ -89,14 +89,15 @@ for current_file, file_date in files_for_import:
 
                     # OGLAS - w this ref_st does NOT exists - insert it
                     ad: Oglas = Oglas(
-                        referencna_st=ad_json.get('referencna_st'), naslov=ad_json.get('naslov'), url=ad_json.get('url'), posredovanje=ad_json.get('posredovanje'), agencija=ad_json.get('agencija'), vrsta=ad_json.get('vrsta'), tip=ad_json.get('tip'), nadstropje=ad_json.get('nadstropje'), velikost=ad_json.get('velikost'), leto_izgradnje=ad_json.get('leto_izgradnje'), zemljisce=ad_json.get('zemljisce'), regija=ad_json.get('regija'))
+                        referencna_st=ad_json.get('referencna_st'), naslov=ad_json.get('naslov'), url=ad_json.get('url'), posredovanje=ad_json.get('posredovanje'), agencija=ad_json.get('agencija'), vrsta=ad_json.get('vrsta'), tip=ad_json.get('tip'), nadstropje=ad_json.get('nadstropje'), velikost=ad_json.get('velikost'), leto_izgradnje=ad_json.get('leto_izgradnje'), zemljisce=ad_json.get('zemljisce'), regija=ad_json.get('regija'), ts_insert=int(datetime.now().timestamp()))
+
                     print('AD does NOT exists. This will be inserted', ad)
                     session.add(ad)
                     session.commit()
 
                     # OGLAS_CENA - insert oglas_cena
                     ad_price: OglasCena = OglasCena(
-                        oglas_id=ad.id, ts=file_ts, cena=ad_json.get('cena'))
+                        oglas_id=ad.id, ts=file_ts, cena=ad_json.get('cena'), ts_insert=int(datetime.now().timestamp()))
 
                     print(
                         'this is ad PRICEE that doesnt exits yet -> will be inserted', ad_price)
@@ -112,7 +113,10 @@ for current_file, file_date in files_for_import:
                     # UPDATE oglas data if necessary
                     # check value of every item of ad stored in db
                     for key, item in ad_db:
-                        if key != 'id' and not isinstance(item, sqlalchemy.orm.state.InstanceState):
+                        if key == 'ts_insert':
+                            pass
+
+                        if key != 'id' and key != 'ts_insert' and not isinstance(item, sqlalchemy.orm.state.InstanceState):
 
                             # convert floats to decimal
                             if isinstance(ad_json.get(key), float):
@@ -128,6 +132,10 @@ for current_file, file_date in files_for_import:
                                 setattr(ad_db, key, ad_json.get(key))
 
                     if session.is_modified(ad_db):
+
+                        setattr(ad_db, 'ts_insert', int(
+                                datetime.now().timestamp()))
+
                         print('Ad does exits and it was updated', ad_db)
                         session.add(ad_db)
                         session.commit()
@@ -168,7 +176,7 @@ for current_file, file_date in files_for_import:
                     if ad_price.cena != ad_json.get('cena') or file_ts - ad_price.ts > 432000:
                         print('the PRICE IS NOT the same')
                         ad_price = OglasCena(
-                            oglas_id=ad_db.id, ts=file_ts, cena=ad_json.get('cena'))
+                            oglas_id=ad_db.id, ts=file_ts, cena=ad_json.get('cena'), ts_insert=int(datetime.now().timestamp()))
 
                         session.add(ad_price)
                         session.commit()
