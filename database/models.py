@@ -29,11 +29,12 @@ class Oglas(SQLModel, table=True):
     vrsta: str
     tip: Optional[str]
     nadstropje: Optional[str] = None
-    velikost: condecimal(max_digits=10, decimal_places=2)
+    velikost: condecimal(max_digits=12, decimal_places=2)
     leto_izgradnje: Optional[int]
     zemljisce: Optional[condecimal(
-        max_digits=10, decimal_places=2)] = Field(default=None)
+        max_digits=12, decimal_places=2)] = Field(default=None)
     regija: str
+    ts_insert: Optional[int]
 
     # oglasi: list["Oglas"] = Relationship(back_populates="nepremicnina")
 
@@ -56,4 +57,5 @@ class OglasCena(SQLModel, table=True):
 
     oglas_id: int = Field(primary_key=True)
     ts: int = Field(primary_key=True)
-    cena: condecimal(max_digits=13, decimal_places=2)
+    cena: condecimal(max_digits=14, decimal_places=2)
+    ts_insert: Optional[int]

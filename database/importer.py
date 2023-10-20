@@ -3,11 +3,12 @@ import sys
 import re
 import pytz
 import shutil
+from time import sleep
 from datetime import datetime
 import fnmatch
 import json
 import decimal
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func
 import sqlalchemy.orm.state
 
 from models import Oglas, OglasCena
@@ -58,8 +59,15 @@ create_db_and_tables()
 print('STARTING TO IMPORT')
 print('---------------')
 
-for current_file, file_date in files_for_import:
+for index, (current_file, file_date) in enumerate(files_for_import):
+    print()
+    print()
+    print()
     print('importing file:', current_file)
+
+    current_import_start_ts: int = int(datetime.now().timestamp())
+    print('current import start time: ',
+          datetime.fromtimestamp(current_import_start_ts))
 
     with open(folder_path + current_file, 'r') as current_json_file:
         data_json = json.load(current_json_file)
@@ -69,7 +77,9 @@ for current_file, file_date in files_for_import:
             datetime.strptime(file_date, '%y-%m-%d')).timestamp())
 
         # count how many times the loop for items in json file executes
-        insert_success_count: int = 0
+        items_loop_execution_count: int = 0
+
+        ads_up_to_date_count: int = 0
 
         with Session(engine) as session:
 
@@ -81,7 +91,7 @@ for current_file, file_date in files_for_import:
 
                 print()
                 print('This is loop run number ',
-                      insert_success_count, ' ----------------------')
+                      items_loop_execution_count, ' ----------------------')
                 print('Does AD exists?', ad_db)
 
                 # if ad with this ref_st does NOT exists
@@ -140,10 +150,12 @@ for current_file, file_date in files_for_import:
                         session.add(ad_db)
                         session.commit()
                         print()
-                        print('THe commit JUST RUNEED')
+                        print('THe commit JUST RANN')
                     else:
                         print()
                         print('AD exists but was not updated')
+
+                        ads_up_to_date_count += 1
 
                     print()
                     print()
@@ -187,16 +199,49 @@ for current_file, file_date in files_for_import:
                     else:
                         print('THe price was not updateD')
 
-                insert_success_count = insert_success_count + 1
+                items_loop_execution_count += 1
+
+            # how many inserts - new rows and updates happend in the current import
+            current_import_changes_count = session.exec(select(func.count()).where(
+                Oglas.ts_insert >= current_import_start_ts)).first()
 
     ads_in_file_count: int = len(data_json)
+
+    # Import stats
+    # currently stats don't represent the whole picture. Changes in table oglas_cena are not included
+
+    print()
+    print('IMPORT stats (current file) based only on oglas table!!')
+    print('-------------------------------------------------------')
+    print(
+        f'Changes made (new ads/records or updates): {current_import_changes_count}')
+    print(f'Ads not changed / already up to date: {ads_up_to_date_count}')
+    print(
+        f'Changed ads + up to date ads: { current_import_changes_count + ads_up_to_date_count}')
+    print(f'Number of ads in json file: ', ads_in_file_count)
+
+    # move current file to archive folder and rename it to *-imported.json
+    # do this only if it was successful import
     archive_folder_path = '../crawler/scraped-data-host/start/archive/'
 
-    # move current file to archive folder and renamed it to *-imported.json
-    # do this only if it was successful import
-    if ads_in_file_count != insert_success_count:
+    if ads_in_file_count != current_import_changes_count + ads_up_to_date_count:
         sys.exit('\n ERROR, IMPORTER EXITED! Something went wrong when inserting / updating ' + str(current_file) +
-                 '. Please manually check how many items (ads) where (not) inserted. The loop that inserts items have runned ' + str(insert_success_count) + ' times before failing. If possible try reverting db and try again.')
+                 '. Please manually check how many items (ads) were (not) inserted. The loop that inserts items have runned ' + str(items_loop_execution_count) + ' times before failing. If possible try reverting db and try again.')
     else:
+        print()
+        print(f'File import success! {current_file}')
+        print('Renaming file and moving it to archive...')
+
         shutil.move(folder_path + current_file, archive_folder_path +
                     current_file[:-5] + '-imported.json')
+
+    # sleep for a second to prevent ads in the next file to have the same insert_ts value, which is used to determine if the current file import was successful
+    last_file_to_import = True if index == len(files_for_import) - 1 else False
+    if not last_file_to_import:
+        sleep(1)
+
+print()
+print('Importer finished! Job is done!')
+
+end_time = datetime.now()
+print(f'At: {end_time}')
