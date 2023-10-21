@@ -34,7 +34,8 @@ class Oglas(SQLModel, table=True):
     zemljisce: Optional[condecimal(
         max_digits=12, decimal_places=2)] = Field(default=None)
     regija: str
-    ts_insert: Optional[int]
+    created_at: int
+    updated_at: int
 
     # oglasi: list["Oglas"] = Relationship(back_populates="nepremicnina")
 
@@ -58,4 +59,4 @@ class OglasCena(SQLModel, table=True):
     oglas_id: int = Field(primary_key=True)
     ts: int = Field(primary_key=True)
     cena: condecimal(max_digits=14, decimal_places=2)
-    ts_insert: Optional[int]
+    created_at: int

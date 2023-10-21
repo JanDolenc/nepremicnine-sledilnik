@@ -98,8 +98,10 @@ for index, (current_file, file_date) in enumerate(files_for_import):
                 if ad_db is None:
 
                     # OGLAS - w this ref_st does NOT exists - insert it
+                    oglas_created_at: int = int(datetime.now().timestamp())
+
                     ad: Oglas = Oglas(
-                        referencna_st=ad_json.get('referencna_st'), naslov=ad_json.get('naslov'), url=ad_json.get('url'), posredovanje=ad_json.get('posredovanje'), agencija=ad_json.get('agencija'), vrsta=ad_json.get('vrsta'), tip=ad_json.get('tip'), nadstropje=ad_json.get('nadstropje'), velikost=ad_json.get('velikost'), leto_izgradnje=ad_json.get('leto_izgradnje'), zemljisce=ad_json.get('zemljisce'), regija=ad_json.get('regija'), ts_insert=int(datetime.now().timestamp()))
+                        referencna_st=ad_json.get('referencna_st'), naslov=ad_json.get('naslov'), url=ad_json.get('url'), posredovanje=ad_json.get('posredovanje'), agencija=ad_json.get('agencija'), vrsta=ad_json.get('vrsta'), tip=ad_json.get('tip'), nadstropje=ad_json.get('nadstropje'), velikost=ad_json.get('velikost'), leto_izgradnje=ad_json.get('leto_izgradnje'), zemljisce=ad_json.get('zemljisce'), regija=ad_json.get('regija'), created_at=oglas_created_at, updated_at=oglas_created_at)
 
                     print('AD does NOT exists. This will be inserted', ad)
                     session.add(ad)
@@ -107,7 +109,7 @@ for index, (current_file, file_date) in enumerate(files_for_import):
 
                     # OGLAS_CENA - insert oglas_cena
                     ad_price: OglasCena = OglasCena(
-                        oglas_id=ad.id, ts=file_ts, cena=ad_json.get('cena'), ts_insert=int(datetime.now().timestamp()))
+                        oglas_id=ad.id, ts=file_ts, cena=ad_json.get('cena'), created_at=int(datetime.now().timestamp()))
 
                     print(
                         'this is ad PRICEE that doesnt exits yet -> will be inserted', ad_price)
@@ -123,10 +125,8 @@ for index, (current_file, file_date) in enumerate(files_for_import):
                     # UPDATE oglas data if necessary
                     # check value of every item of ad stored in db
                     for key, item in ad_db:
-                        if key == 'ts_insert':
-                            pass
 
-                        if key != 'id' and key != 'ts_insert' and not isinstance(item, sqlalchemy.orm.state.InstanceState):
+                        if key != 'id' and key != 'created_at' and key != 'updated_at' and not isinstance(item, sqlalchemy.orm.state.InstanceState):
 
                             # convert floats to decimal
                             if isinstance(ad_json.get(key), float):
@@ -143,7 +143,7 @@ for index, (current_file, file_date) in enumerate(files_for_import):
 
                     if session.is_modified(ad_db):
 
-                        setattr(ad_db, 'ts_insert', int(
+                        setattr(ad_db, 'updated_at', int(
                                 datetime.now().timestamp()))
 
                         print('Ad does exits and it was updated', ad_db)
@@ -184,11 +184,11 @@ for index, (current_file, file_date) in enumerate(files_for_import):
                     ad_json['cena'] = decimal.Decimal(
                         str(ad_json.get('cena'))).quantize(decimal.Decimal('.01'))
 
-                    # update price if it's changed or older than 5 days = 432000 seconds - every other job
+                    # update price (insert new record) if it's changed or older than 5 days = 432000 seconds - every other job
                     if ad_price.cena != ad_json.get('cena') or file_ts - ad_price.ts > 432000:
                         print('the PRICE IS NOT the same')
                         ad_price = OglasCena(
-                            oglas_id=ad_db.id, ts=file_ts, cena=ad_json.get('cena'), ts_insert=int(datetime.now().timestamp()))
+                            oglas_id=ad_db.id, ts=file_ts, cena=ad_json.get('cena'), created_at=int(datetime.now().timestamp()))
 
                         session.add(ad_price)
                         session.commit()
@@ -203,7 +203,7 @@ for index, (current_file, file_date) in enumerate(files_for_import):
 
             # how many inserts - new rows and updates happend in the current import
             current_import_changes_count = session.exec(select(func.count()).where(
-                Oglas.ts_insert >= current_import_start_ts)).first()
+                Oglas.updated_at >= current_import_start_ts)).first()
 
     ads_in_file_count: int = len(data_json)
 
