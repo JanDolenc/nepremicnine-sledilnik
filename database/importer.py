@@ -117,9 +117,7 @@ for index, (current_file, file_date) in enumerate(files_for_import):
                     session.commit()
                     print()
 
-                # if ad with ref_st does exists
-                # print()
-                # print('ad before ad is not none check (updating ad)', ad_db)
+                # if ad with ref_st DOES exists
                 if ad_db is not None:
 
                     # UPDATE oglas data if necessary
@@ -162,10 +160,6 @@ for index, (current_file, file_date) in enumerate(files_for_import):
                     print()
 
                     # OGLAS_CENA - update (oglas_cena) if necessary
-
-                    # ad_price = session.exec(select(OglasCena).where(
-                    #    OglasCena.oglas_id == ad.id).order_by(OglasCena.ts.desc()).limit(1)).all()
-
                     ad_price = session.exec(select(OglasCena).where(
                         OglasCena.oglas_id == ad_db.id).order_by(OglasCena.ts.desc())).first()
 
@@ -220,8 +214,7 @@ for index, (current_file, file_date) in enumerate(files_for_import):
         f'Changed ads + up to date ads: { current_import_changes_count + ads_up_to_date_count}')
     print(f'Number of ads in json file: ', ads_in_file_count)
 
-    # move current file to archive folder and rename it to *-imported.json
-    # do this only if it was successful import
+    # move current file to archive folder and rename it to *-imported.json if import was successful
     archive_folder_path = '../crawler/scraped-data-host/start/archive/'
 
     if ads_in_file_count != current_import_changes_count + ads_up_to_date_count:
@@ -235,7 +228,7 @@ for index, (current_file, file_date) in enumerate(files_for_import):
         shutil.move(folder_path + current_file, archive_folder_path +
                     current_file[:-5] + '-imported.json')
 
-    # sleep for a second to prevent ads in the next file to have the same insert_ts value, which is used to determine if the current file import was successful
+    # sleep for a second to prevent ads in the next file to have the same updated_at value, which is used to determine if the current file import was successful
     last_file_to_import = True if index == len(files_for_import) - 1 else False
     if not last_file_to_import:
         sleep(1)
