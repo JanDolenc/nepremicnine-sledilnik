@@ -28,4 +28,7 @@ copy-backup-from-host:
 
 mysql-create-db:
 	docker exec -d nsledilnik-mysql mysql -u root -pnsledilnik_db -e "CREATE DATABASE IF NOT EXISTS test;"
-	
+
+# Importer testing: rename imported files back to original name - remove "-imported" from the name	
+rename-imported-files:
+	python3 /home/jan/nepremicnine-sledilnik/scripts/file_renamer.py /home/jan/nepremicnine-sledilnik/crawler/scraped-data-host/start/archive -imported ""
