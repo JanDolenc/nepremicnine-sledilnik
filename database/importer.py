@@ -11,7 +11,7 @@ import decimal
 from sqlmodel import Session, select, func
 import sqlalchemy.orm.state
 
-from models import Oglas, OglasCena
+from models import Oglas, OglasCena, regija_mapped, vrsta_mapped
 from database import create_db_and_tables, engine
 
 print('---------------')
@@ -76,12 +76,37 @@ for index, (current_file, file_date) in enumerate(files_for_import):
         file_ts = int(pytz.utc.localize(
             datetime.strptime(file_date, '%y-%m-%d')).timestamp())
 
+        # get regija label from file name data-REGIJA-x-yy-mm-dd | find a match and take out first string
+        regija_label = re.search(
+            r'gorenjska|lj-mesto|j-primorska|podravska|lj-okolica', current_file).group(0)
+        file_regija = regija_mapped.get(regija_label)
+
+        # get vrsta label from file name data-regija-X-yy-mm-dd | find a match, take out first string "-s-"" or "-h-" then take second character from the string
+        vrsta_label = re.search(r'-s-|-h-', current_file).group(0)[1]
+        file_vrsta = vrsta_mapped.get(vrsta_label)
+
+        print()
+        print('regija in filename', regija_label, file_regija)
+        print('VRSTA in filename', vrsta_label, file_vrsta)
+        print()
+
         # count how many times the loop for items in json file executes
         items_loop_execution_count: int = 0
 
         ads_up_to_date_count: int = 0
 
         with Session(engine) as session:
+
+            # get latest record for current regija and vrsta
+            db_latest_record = session.exec(select(Oglas.id, Oglas.regija, Oglas.vrsta, Oglas.record_ts).where(
+                (Oglas.regija == file_regija) & (Oglas.vrsta == file_vrsta)).order_by(Oglas.record_ts.desc())).first()
+
+            print('latest ReCoRD in db -------',
+                  db_latest_record, datetime.fromtimestamp(db_latest_record.record_ts)) if db_latest_record is not None else print('latest ReCoRD in db -----', db_latest_record)
+
+            # if current file data is not newer that db_latest_record display warning
+            if db_latest_record is not None and not (db_latest_record.record_ts < file_ts):
+                sys.exit(f"\nIMPORTER EXITED, WARNING!\nLooks like the file {current_file} is not the latest - meaining the latest records in db have newer date than those in json file. If we would continue the data (price etc.) would be updated with values that are not the latest - data would be spoiled for current regija-vrsta. \n\nLatest db record: {db_latest_record.id, db_latest_record.regija, db_latest_record.vrsta}, {datetime.fromtimestamp(db_latest_record.record_ts)} \nCurrent file: {file_regija, file_vrsta} {datetime.fromtimestamp(file_ts)} <- problem")
 
             for ad_json in data_json:
 

@@ -38,3 +38,19 @@ class OglasCena(SQLModel, table=True):
     cena: condecimal(max_digits=14, decimal_places=2)
     created_at: int
 
+
+# regija labels to regija values in db
+regija_mapped: dict = {
+    'gorenjska': 'Gorenjska',
+    'lj-mesto': 'LJ-mesto',
+    'j-primorska': 'J. Primorska',
+    'podravska': 'Podravska',
+    'lj-okolica': 'LJ-okolica'
+}
+
+
+# vrsta labels to vrsta values in db
+vrsta_mapped: dict = {
+    's': 'Stanovanje',
+    'h': 'Hiša'
+}
