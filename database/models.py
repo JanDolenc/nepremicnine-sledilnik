@@ -19,7 +19,14 @@ class Oglas(SQLModel, table=True):
     zemljisce: Optional[condecimal(
         max_digits=12, decimal_places=2)] = Field(default=None)
     regija: str
+
+    # timestamp value of (latest) json file which is the source of the record - ad data.
+    record_ts: int
+
+    # timestamp value that represents when the importer script inserted this record into db.
     created_at: int
+
+    # timestamp value that represents when the importer script inserted OR updated this record in db.
     updated_at: int
 
 
@@ -27,6 +34,7 @@ class OglasCena(SQLModel, table=True):
     __tablename__ = "oglas_cena"
 
     oglas_id: int = Field(primary_key=True)
-    ts: int = Field(primary_key=True)
+    record_ts: int = Field(primary_key=True)
     cena: condecimal(max_digits=14, decimal_places=2)
     created_at: int
+
