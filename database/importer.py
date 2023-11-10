@@ -29,7 +29,11 @@ files_for_import: list[str] = []
 folder_path: str = '../crawler/scraped-data-host/start/'
 
 for filename in os.listdir(folder_path):
-    if fnmatch.fnmatch(filename, 'data-*.json') and not fnmatch.fnmatch(filename, '*imported*'):
+
+    file_size = os.stat(folder_path + filename).st_size
+
+    # import only files with appropriate name and are not empty
+    if fnmatch.fnmatch(filename, 'data-*.json') and not fnmatch.fnmatch(filename, '*imported*') and file_size > 0:
 
         # get the date (string "YY-MM-DD") out of the current file name using regex
         match = re.search(r'\d{2}-\d{2}-\d{2}', filename)
