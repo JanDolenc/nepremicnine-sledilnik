@@ -119,8 +119,8 @@ for index, (current_file, file_date) in enumerate(files_for_import):
             print('latest ReCoRD in db -------',
                   db_latest_record, datetime.fromtimestamp(db_latest_record.record_ts)) if db_latest_record is not None else print('latest ReCoRD in db -----', db_latest_record)
 
-            # if current file data is not newer that db_latest_record display warning
-            if db_latest_record is not None and not (db_latest_record.record_ts < file_ts):
+            # if current file data is not newer or equal that db_latest_record display warning
+            if db_latest_record is not None and not (db_latest_record.record_ts <= file_ts):
                 print_job_stats_when_error()
                 sys.exit(f"IMPORTER EXITED, WARNING!\nLooks like the file {current_file} is not the latest - meaining the latest records in db have newer date than those in json file. If we would continue the data (price etc.) would be updated with values that are not the latest - data would be spoiled for current regija-vrsta. \n\nLatest db record: {db_latest_record.id, db_latest_record.regija, db_latest_record.vrsta}, {datetime.fromtimestamp(db_latest_record.record_ts)} \nCurrent file: {file_regija, file_vrsta} {datetime.fromtimestamp(file_ts)} <- problem")
 
