@@ -14,6 +14,16 @@ import sqlalchemy.orm.state
 from models import Oglas, OglasCena, regija_mapped, vrsta_mapped
 from database import create_db_and_tables, engine
 
+
+def print_job_stats_when_error():
+    if job_stats:
+        print(
+            f"\nImporter exited but still successfully imported ({job_stats[-1].get('file_number')}) files in this order")
+        print(json.dumps(job_stats, indent=4))
+    else:
+        print(f"\n\nIMPORTER may (partialy) import one file ({current_file}).")
+
+
 print('---------------')
 print('IMPORTER v0.0.1')
 start_time = datetime.now()
@@ -26,6 +36,7 @@ print('---------------')
 
 files_count: int = 0
 files_for_import: list[str] = []
+job_stats: list[dict] = []
 folder_path: str = '../crawler/scraped-data-host/start/'
 
 for filename in os.listdir(folder_path):
@@ -110,7 +121,8 @@ for index, (current_file, file_date) in enumerate(files_for_import):
 
             # if current file data is not newer that db_latest_record display warning
             if db_latest_record is not None and not (db_latest_record.record_ts < file_ts):
-                sys.exit(f"\nIMPORTER EXITED, WARNING!\nLooks like the file {current_file} is not the latest - meaining the latest records in db have newer date than those in json file. If we would continue the data (price etc.) would be updated with values that are not the latest - data would be spoiled for current regija-vrsta. \n\nLatest db record: {db_latest_record.id, db_latest_record.regija, db_latest_record.vrsta}, {datetime.fromtimestamp(db_latest_record.record_ts)} \nCurrent file: {file_regija, file_vrsta} {datetime.fromtimestamp(file_ts)} <- problem")
+                print_job_stats_when_error()
+                sys.exit(f"IMPORTER EXITED, WARNING!\nLooks like the file {current_file} is not the latest - meaining the latest records in db have newer date than those in json file. If we would continue the data (price etc.) would be updated with values that are not the latest - data would be spoiled for current regija-vrsta. \n\nLatest db record: {db_latest_record.id, db_latest_record.regija, db_latest_record.vrsta}, {datetime.fromtimestamp(db_latest_record.record_ts)} \nCurrent file: {file_regija, file_vrsta} {datetime.fromtimestamp(file_ts)} <- problem")
 
             for ad_json in data_json:
 
@@ -232,26 +244,25 @@ for index, (current_file, file_date) in enumerate(files_for_import):
 
     ads_in_file_count: int = len(data_json)
 
-    # Import stats
-    # currently stats don't represent the whole picture. Changes in table oglas_cena are not included
-
-    print()
-    print('IMPORT stats (current file) based only on oglas table!!')
-    print('-------------------------------------------------------')
-    print(
-        f'Changes made (new ads/records or updates): {current_import_changes_count}')
-    print(f'Ads not changed / already up to date: {ads_up_to_date_count}')
-    print(
-        f'Changed ads + up to date ads: { current_import_changes_count + ads_up_to_date_count}')
-    print(f'Number of ads in json file: ', ads_in_file_count)
-
     # move current file to archive folder and rename it to *-imported.json if import was successful
     archive_folder_path = '../crawler/scraped-data-host/start/archive/'
 
     if ads_in_file_count != current_import_changes_count + ads_up_to_date_count:
-        sys.exit('\n ERROR, IMPORTER EXITED! Something went wrong when inserting / updating ' + str(current_file) +
-                 '. Please manually check how many items (ads) were (not) inserted. The loop that inserts items have runned ' + str(items_loop_execution_count) + ' times before failing. If possible try reverting db and try again.')
+        print_job_stats_when_error()
+        sys.exit('ERROR, IMPORTER EXITED! Something went wrong when inserting / updating ' + str(current_file) +
+                 '. Please manually check how many items (ads) were (not) inserted. The loop that inserts items have ran ' + str(items_loop_execution_count) + ' times before failing. If possible try reverting db and try again.')
     else:
+        job_stats.append(
+            {
+                'file_number': index + 1,
+                'file_name': current_file,
+                'import_start_time': str(datetime.fromtimestamp(current_import_start_ts)),
+                'changes_made': current_import_changes_count,  # new records or updates
+                'ads_not_changed': ads_up_to_date_count,  # already up to date
+                'number_of_ads_in_file': ads_in_file_count
+            }
+        )
+
         print()
         print(f'File import success! {current_file}')
         print('Renaming file and moving it to archive...')
@@ -265,7 +276,32 @@ for index, (current_file, file_date) in enumerate(files_for_import):
         sleep(1)
 
 print()
-print('Importer finished! Job is done!')
+print()
 
 end_time = datetime.now()
-print(f'At: {end_time}')
+
+
+# currently stats don't represent the whole picture. Changes in table oglas_cena are not included
+print('IMPORTER JOB STATS | informative based only on oglas table!!')
+print('------------------------------------------------------------')
+print(f'Start time: {start_time}')
+print(f'End time:   {end_time}')
+print(
+    f"Successfully imported ({job_stats[-1].get('file_number')}) files in this order")
+print(json.dumps(job_stats, indent=4))
+print()
+
+total_changes_made: int = 0
+total_ads_not_changed: int = 0
+total_ads_in_files: int = 0
+
+for item in job_stats:
+    total_changes_made += item.get('changes_made')
+    total_ads_not_changed += item.get('ads_not_changed')
+    total_ads_in_files += item.get('number_of_ads_in_file')
+
+print(f'Total changes made / new records or updates: {total_changes_made}')
+print(f'Total ads not changed / already up to date: {total_ads_not_changed}')
+print(f'Total number of ads in files (not unique): {total_ads_in_files}')
+print()
+print('Success! Importer finished! Job is done!')
