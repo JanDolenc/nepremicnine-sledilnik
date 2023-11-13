@@ -20,8 +20,11 @@ class Oglas(SQLModel, table=True):
         max_digits=12, decimal_places=2)] = Field(default=None)
     regija: str
 
-    # timestamp value of (latest) json file which is the source of the record - ad data.
-    record_ts: int
+    # timestamp value of json file in which the ad first appeared in - was detected
+    detected_ts: int
+
+    # timestamp value of (latest) json file in which at least one property of the ad changed
+    updated_ts: int
 
     # timestamp value that represents when the importer script inserted this record into db.
     created_at: int

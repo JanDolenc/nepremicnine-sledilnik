@@ -113,16 +113,16 @@ for index, (current_file, file_date) in enumerate(files_for_import):
         with Session(engine) as session:
 
             # get latest record for current regija and vrsta
-            db_latest_record = session.exec(select(Oglas.id, Oglas.regija, Oglas.vrsta, Oglas.record_ts).where(
-                (Oglas.regija == file_regija) & (Oglas.vrsta == file_vrsta)).order_by(Oglas.record_ts.desc())).first()
+            db_latest_record = session.exec(select(Oglas.id, Oglas.regija, Oglas.vrsta, Oglas.updated_ts).where(
+                (Oglas.regija == file_regija) & (Oglas.vrsta == file_vrsta)).order_by(Oglas.updated_ts.desc())).first()
 
             print('latest ReCoRD in db -------',
-                  db_latest_record, datetime.fromtimestamp(db_latest_record.record_ts)) if db_latest_record is not None else print('latest ReCoRD in db -----', db_latest_record)
+                  db_latest_record, datetime.fromtimestamp(db_latest_record.updated_ts)) if db_latest_record is not None else print('latest ReCoRD in db -----', db_latest_record)
 
             # if current file data is not newer or equal that db_latest_record display warning
-            if db_latest_record is not None and not (db_latest_record.record_ts <= file_ts):
+            if db_latest_record is not None and not (db_latest_record.updated_ts <= file_ts):
                 print_job_stats_when_error()
-                sys.exit(f"IMPORTER EXITED, WARNING!\nLooks like the file {current_file} is not the latest - meaining the latest records in db have newer date than those in json file. If we would continue the data (price etc.) would be updated with values that are not the latest - data would be spoiled for current regija-vrsta. \n\nLatest db record: {db_latest_record.id, db_latest_record.regija, db_latest_record.vrsta}, {datetime.fromtimestamp(db_latest_record.record_ts)} \nCurrent file: {file_regija, file_vrsta} {datetime.fromtimestamp(file_ts)} <- problem")
+                sys.exit(f"IMPORTER EXITED, WARNING!\nLooks like the file {current_file} is not the latest - meaining the latest records in db have newer date than those in json file. If we would continue the data (price etc.) would be updated with values that are not the latest - data would be spoiled for current regija-vrsta. \n\nLatest db record: {db_latest_record.id, db_latest_record.regija, db_latest_record.vrsta}, {datetime.fromtimestamp(db_latest_record.updated_ts)} \nCurrent file: {file_regija, file_vrsta} {datetime.fromtimestamp(file_ts)} <- problem")
 
             for ad_json in data_json:
 
@@ -142,7 +142,7 @@ for index, (current_file, file_date) in enumerate(files_for_import):
                     oglas_created_at: int = int(datetime.now().timestamp())
 
                     ad: Oglas = Oglas(
-                        referencna_st=ad_json.get('referencna_st'), naslov=ad_json.get('naslov'), url=ad_json.get('url'), posredovanje=ad_json.get('posredovanje'), agencija=ad_json.get('agencija'), vrsta=ad_json.get('vrsta'), tip=ad_json.get('tip'), nadstropje=ad_json.get('nadstropje'), velikost=ad_json.get('velikost'), leto_izgradnje=ad_json.get('leto_izgradnje'), zemljisce=ad_json.get('zemljisce'), regija=ad_json.get('regija'), record_ts=file_ts, created_at=oglas_created_at, updated_at=oglas_created_at)
+                        referencna_st=ad_json.get('referencna_st'), naslov=ad_json.get('naslov'), url=ad_json.get('url'), posredovanje=ad_json.get('posredovanje'), agencija=ad_json.get('agencija'), vrsta=ad_json.get('vrsta'), tip=ad_json.get('tip'), nadstropje=ad_json.get('nadstropje'), velikost=ad_json.get('velikost'), leto_izgradnje=ad_json.get('leto_izgradnje'), zemljisce=ad_json.get('zemljisce'), regija=ad_json.get('regija'), detected_ts=file_ts, updated_ts=file_ts, created_at=oglas_created_at, updated_at=oglas_created_at)
 
                     print('AD does NOT exists. This will be inserted', ad)
                     session.add(ad)
@@ -165,7 +165,7 @@ for index, (current_file, file_date) in enumerate(files_for_import):
                     # check value of every item of ad stored in db
                     for key, item in ad_db:
 
-                        if key != 'id' and key != 'record_ts' and key != 'created_at' and key != 'updated_at' and not isinstance(item, sqlalchemy.orm.state.InstanceState):
+                        if key != 'id' and key != 'detected_ts' and key != 'updated_ts' and key != 'created_at' and key != 'updated_at' and not isinstance(item, sqlalchemy.orm.state.InstanceState):
 
                             # convert floats to decimal
                             if isinstance(ad_json.get(key), float):
@@ -182,7 +182,7 @@ for index, (current_file, file_date) in enumerate(files_for_import):
 
                     if session.is_modified(ad_db):
 
-                        setattr(ad_db, 'record_ts', file_ts)
+                        setattr(ad_db, 'updated_ts', file_ts)
 
                         setattr(ad_db, 'updated_at', int(
                                 datetime.now().timestamp()))
