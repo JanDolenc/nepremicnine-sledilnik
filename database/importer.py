@@ -279,7 +279,7 @@ print()
 print()
 
 end_time = datetime.now()
-
+job_duration = end_time - start_time
 
 # currently stats don't represent the whole picture. Changes in table oglas_cena are not included
 print('IMPORTER JOB STATS | informative based only on oglas table!!')
@@ -287,7 +287,7 @@ print('------------------------------------------------------------')
 print(f'Start time: {start_time}')
 print(f'End time:   {end_time}')
 print(
-    f"Successfully imported ({job_stats[-1].get('file_number')}) files in this order")
+    f"Successfully imported ({job_stats[-1].get('file_number')}) files in {job_duration}")
 print(json.dumps(job_stats, indent=4))
 print()
 
