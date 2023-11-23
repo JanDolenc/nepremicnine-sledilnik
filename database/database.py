@@ -1,6 +1,17 @@
 from sqlmodel import SQLModel, create_engine
+from dotenv import load_dotenv
+from os import getenv
 
-CONN_STRING = "mysql+pymysql://root:nsledilnik_db@127.0.0.1:3306/importer_dev?charset=utf8mb4"
+
+load_dotenv()
+
+database_user: str = getenv('DATABASE_USER')
+database_password: str = getenv('DATABASE_PASSWORD')
+database_host: str = getenv('DATABASE_HOST')
+database_port: str = getenv('DATABASE_PORT')
+database_name: str = getenv('DATABASE_NAME')
+
+CONN_STRING = f"mysql+pymysql://{database_user}:{database_password}@{database_host}:{database_port}/{database_name}?charset=utf8mb4"
 
 # for debugging purposes set echo=True: create_engine(CONN_STRING, echo=True)
 engine = create_engine(CONN_STRING)

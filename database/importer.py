@@ -10,9 +10,12 @@ import json
 import decimal
 from sqlmodel import Session, select, func
 import sqlalchemy.orm.state
+from dotenv import load_dotenv
 
 from models import Oglas, OglasCena, regija_mapped, vrsta_mapped
 from database import create_db_and_tables, engine
+
+load_dotenv()
 
 
 def print_job_stats_when_error():
@@ -37,7 +40,8 @@ print('---------------')
 files_count: int = 0
 files_for_import: list[str] = []
 job_stats: list[dict] = []
-folder_path: str = '../crawler/scraped-data-host/start/'
+# path to folder with json files for import into db
+folder_path: str = os.getenv('IMPORT_FOLDER_PATH')
 
 for filename in os.listdir(folder_path):
 
@@ -245,7 +249,7 @@ for index, (current_file, file_date) in enumerate(files_for_import):
     ads_in_file_count: int = len(data_json)
 
     # move current file to archive folder and rename it to *-imported.json if import was successful
-    archive_folder_path = '../crawler/scraped-data-host/start/archive/'
+    archive_folder_path = os.getenv('ARCHIVE_FOLDER_PATH')
 
     if ads_in_file_count != current_import_changes_count + ads_up_to_date_count:
         print_job_stats_when_error()
