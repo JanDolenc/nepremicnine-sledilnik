@@ -1,7 +1,7 @@
 from fastapi import Depends, FastAPI, HTTPException
 from sqlmodel import Session
 
-from app.models import Oglas, OglasRead, OglasCena
+from app.models import OglasReadWithPrice
 from app.database import engine, create_db_and_tables
 import app.crud as crud
 
@@ -20,10 +20,10 @@ def on_startup():
 
 
 @app.get("/search/oglas/")
-async def read_oglas(*, session: Session = Depends(get_session), url: str):
-    ad = crud.get_oglas(session=session, url=url)
+async def read_oglas(*, session: Session = Depends(get_session), url: str) -> OglasReadWithPrice:
+    oglas = crud.get_oglas(session=session, url=url)
 
-    if not ad:
+    if not oglas:
         raise HTTPException(
             status_code=404, detail="Ad with this url not found.")
-    return ad
+    return oglas

@@ -9,19 +9,13 @@ def parse_referencna_st_from_url(url): return int(
 
 
 def select_oglas(session: Session, referecna_st):
-    statement = select(Oglas).where(
-        Oglas.referencna_st == referecna_st)
-    result = session.exec(statement).first()
-
-    return result
+    return session.exec(select(Oglas).where(
+        Oglas.referencna_st == referecna_st)).first()
 
 
 def select_oglas_price_data(session: Session, oglas_id: int):
-    statement = select(OglasCena.record_ts, OglasCena.cena).where(
-        OglasCena.oglas_id == oglas_id)
-    result = session.exec(statement).all()
-
-    return result
+    return session.exec(select(OglasCena.record_ts, OglasCena.cena).where(
+        OglasCena.oglas_id == oglas_id)).all()
 
 
 def get_oglas(session: Session, url: str):
@@ -29,11 +23,12 @@ def get_oglas(session: Session, url: str):
 
     oglas = select_oglas(session=session, referecna_st=referecna_st)
 
-    oglas_price_data = select_oglas_price_data(
-        session=session, oglas_id=oglas.id)
+    if oglas:
+        oglas_price_data = select_oglas_price_data(
+            session=session, oglas_id=oglas.id)
 
-    oglas_dict = jsonable_encoder(oglas)
+        oglas_dict = jsonable_encoder(oglas)
 
-    oglas_dict['price_data'] = oglas_price_data
+        oglas_dict['price_data'] = oglas_price_data
 
-    return oglas_dict
+        return oglas_dict
