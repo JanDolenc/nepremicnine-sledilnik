@@ -27,3 +27,17 @@ async def read_oglas(*, session: Session = Depends(get_session), url: str) -> Og
         raise HTTPException(
             status_code=404, detail="Ad with this url not found.")
     return oglas
+
+
+@app.get("/search/similar/oglasi")
+async def read_similar_oglasi(*, session: Session = Depends(get_session), id: int,  regija: str | None = None, vrsta: str | None = None, velikost_min: float | None = None, cena_max: float | None = None):
+    query_params: dict = {"id": id, "regija": regija,
+                          "vrsta": vrsta, "velikost_min": velikost_min, "cena_max": cena_max}
+
+    similar_oglasi = crud.get_similar_oglasi(
+        session=session, query_params=query_params)
+
+    if not similar_oglasi["similar_oglasi"]:
+        raise HTTPException(
+            status_code=404, detail=f"Similar ads for this ad  not found.")
+    return similar_oglasi
