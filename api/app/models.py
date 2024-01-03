@@ -10,15 +10,18 @@ from sqlmodel import Field, SQLModel
 class OglasBase(SQLModel):
     referencna_st: int = Field(unique=True, index=True)
     naslov: str
-    url: str = Field(unique=True, index=True)
-    regija: str
     vrsta: str
     tip: Optional[str]
     velikost: condecimal(max_digits=12, decimal_places=2)
-    agencija: str
-    posredovanje: str
     leto_izgradnje: Optional[int] = None
     nadstropje: Optional[str] = None
+
+
+class OglasBasic(OglasBase):
+    url: str = Field(unique=True, index=True)
+    regija: str
+    agencija: str
+    posredovanje: str
     zemljisce: Optional[condecimal(
         max_digits=12, decimal_places=2)] = Field(default=None)
     regija: str
@@ -29,6 +32,9 @@ class OglasBase(SQLModel):
     # timestamp value of (latest) json file in which at least one property of the ad changed
     updated_ts: int
 
+
+class Oglas(OglasBasic, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
     # timestamp value that represents when the importer script inserted this record into db.
     created_at: int
 
@@ -36,11 +42,7 @@ class OglasBase(SQLModel):
     updated_at: int
 
 
-class Oglas(OglasBase, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-
-
-class OglasRead(OglasBase):
+class OglasRead(OglasBasic):
     id: int
 
 
@@ -68,14 +70,7 @@ class OglasReadWithPrice(OglasRead):
     price_data: list[OglasCenaRead]
 
 
-class SimilarOglasReadWithPrice(SQLModel):
-    referencna_st: int
-    naslov: str
-    vrsta: str
-    tip: Optional[str]
-    nadstropje: Optional[str]
-    leto_izgradnje: Optional[int]
-    velikost: condecimal(max_digits=12, decimal_places=2)
+class SimilarOglasReadWithPrice(OglasBase):
     cena: condecimal(max_digits=14, decimal_places=2)
 
 
