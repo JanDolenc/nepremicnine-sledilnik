@@ -66,3 +66,18 @@ class OglasCenaRead(OglasCenaBase):
 # Mixed models
 class OglasReadWithPrice(OglasRead):
     price_data: list[OglasCenaRead]
+
+
+class SimilarOglasReadWithPrice(SQLModel):
+    referencna_st: int
+    naslov: str
+    vrsta: str
+    tip: Optional[str]
+    nadstropje: Optional[str]
+    leto_izgradnje: Optional[int]
+    velikost: condecimal(max_digits=12, decimal_places=2)
+    cena: condecimal(max_digits=14, decimal_places=2)
+
+
+class SimilarOglasiRead(SQLModel):
+    similar_oglasi: list[SimilarOglasReadWithPrice]
