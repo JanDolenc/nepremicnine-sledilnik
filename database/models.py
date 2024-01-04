@@ -4,18 +4,24 @@ from pydantic import condecimal
 from sqlmodel import Field, SQLModel
 
 
-class Oglas(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+# Oglas models
+
+
+class OglasBase(SQLModel):
     referencna_st: int = Field(unique=True, index=True)
     naslov: str
-    url: str = Field(unique=True, index=True)
-    posredovanje: str
-    agencija: str
     vrsta: str
     tip: Optional[str]
-    nadstropje: Optional[str] = None
     velikost: condecimal(max_digits=12, decimal_places=2)
     leto_izgradnje: Optional[int] = None
+    nadstropje: Optional[str] = None
+
+
+class OglasBasic(OglasBase):
+    url: str = Field(unique=True, index=True)
+    regija: str
+    agencija: str
+    posredovanje: str
     zemljisce: Optional[condecimal(
         max_digits=12, decimal_places=2)] = Field(default=None)
     regija: str
@@ -26,6 +32,9 @@ class Oglas(SQLModel, table=True):
     # timestamp value of (latest) json file in which at least one property of the ad changed
     updated_ts: int
 
+
+class Oglas(OglasBasic, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
     # timestamp value that represents when the importer script inserted this record into db.
     created_at: int
 
@@ -33,13 +42,40 @@ class Oglas(SQLModel, table=True):
     updated_at: int
 
 
-class OglasCena(SQLModel, table=True):
-    __tablename__ = "oglas_cena"
+class OglasRead(OglasBasic):
+    id: int
 
-    oglas_id: int = Field(primary_key=True)
+
+# OglasCena models
+
+
+class OglasCenaBase(SQLModel):
     record_ts: int = Field(primary_key=True)
     cena: condecimal(max_digits=14, decimal_places=2)
+
+
+class OglasCena(OglasCenaBase, table=True):
+    __tablename__ = "oglas_cena"
+
+    oglas_id: int = Field(primary_key=True, foreign_key="oglas.id")
     created_at: int
+
+
+class OglasCenaRead(OglasCenaBase):
+    pass
+
+
+# Mixed models
+class OglasReadWithPrice(OglasRead):
+    price_data: list[OglasCenaRead]
+
+
+class SimilarOglasReadWithPrice(OglasBase):
+    cena: condecimal(max_digits=14, decimal_places=2)
+
+
+class SimilarOglasiRead(SQLModel):
+    similar_oglasi: list[SimilarOglasReadWithPrice]
 
 
 # regija labels to regija values in db

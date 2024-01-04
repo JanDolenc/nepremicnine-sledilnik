@@ -8,5 +8,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+# Comment out cmd command when building testing image importer-manual
 CMD [ "python", "importer.py" ]
-    
