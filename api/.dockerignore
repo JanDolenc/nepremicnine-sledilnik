@@ -1,9 +1,0 @@
-**/*__pycache__
-**/*.pyc
-**/*.json
-**/*.log
-**/.python-version
-**/*Makefile
-**/*Dockerfile
-**/*.dockerignore
-**/*docker-compose.yaml
