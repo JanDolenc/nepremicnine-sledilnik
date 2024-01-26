@@ -2,9 +2,9 @@ from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session
 
-from app.models import OglasReadWithPrice, SimilarOglasiRead
-from app.database import engine, create_db_and_tables
-import app.crud as crud
+from db_common.models import OglasReadWithPrice, SimilarOglasiRead
+from db_common.database import engine, create_db_and_tables
+from app import crud
 
 
 def get_session():  # session in a function shared with every route - FastAPI dependency injection

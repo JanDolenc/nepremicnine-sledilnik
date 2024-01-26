@@ -1,0 +1,21 @@
+# dockerignore for api. Building the api requires wider build context. dockerignore must be in the root of the context for docker to use it 
+**/*__pycache__
+**/*.pyc
+**/*.egg-info
+**/*.json
+**/*.log
+**/.python-version
+**/*Makefile
+**/*Dockerfile
+**/*.dockerignore
+**/*docker-compose.yaml
+**/*.env*
+**/*.github
+**/*.mypy_cache
+**/*.vscode
+**/*.git
+**/*.gitignore
+**/*.md
+**/crawler
+**/logs
+**/scripts

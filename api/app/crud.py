@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from fastapi.encoders import jsonable_encoder
 from sqlmodel import Session, select, func
 
-from app.models import Oglas, OglasCena
+from db_common.models import Oglas, OglasCena
 
 
 def parse_referencna_st_from_url(url): return int(
@@ -69,7 +69,7 @@ def get_similar_oglasi(session: Session, query_params: dict):
             # expensive ads have price listed per m2 and appear in results as the cheapest option. Exlude them from results
             OglasCena.cena >= 10000,
             OglasCena.record_ts >= (
-                datetime.now() - timedelta(days=70)).timestamp(),
+                datetime.now() - timedelta(days=101)).timestamp(),
             OglasCena.record_ts == (
                 select(func.max(OglasCena.record_ts))
                 .where(Oglas.id == OglasCena.oglas_id)

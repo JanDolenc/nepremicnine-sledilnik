@@ -12,8 +12,8 @@ from sqlmodel import Session, select, func
 import sqlalchemy.orm.state
 from dotenv import load_dotenv
 
-from models import Oglas, OglasCena, regija_mapped, vrsta_mapped
-from database import create_db_and_tables, engine
+from db_common.models import Oglas, OglasCena, regija_mapped, vrsta_mapped
+from db_common.database import create_db_and_tables, engine
 
 load_dotenv()
 

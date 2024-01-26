@@ -76,3 +76,20 @@ class SimilarOglasReadWithPrice(OglasBase):
 
 class SimilarOglasiRead(SQLModel):
     similar_oglasi: list[SimilarOglasReadWithPrice]
+
+
+# regija labels to regija values in db
+regija_mapped: dict = {
+    'gorenjska': 'Gorenjska',
+    'lj-mesto': 'LJ-mesto',
+    'j-primorska': 'J. Primorska',
+    'podravska': 'Podravska',
+    'lj-okolica': 'LJ-okolica'
+}
+
+
+# vrsta labels to vrsta values in db
+vrsta_mapped: dict = {
+    's': 'Stanovanje',
+    'h': 'Hiša'
+}
