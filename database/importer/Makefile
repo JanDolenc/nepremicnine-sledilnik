@@ -9,22 +9,23 @@ build-importer: TAG = manual-dev
 build-importer:
 	docker build -f Dockerfile ./.. -t nsledilnik/importer:$(TAG)
 
-sh-importer:
-	docker exec -it importer sh
-
-rm-importer:
-	docker rm -f importer
 
 # Start container that does NOT automatically execute the importer script. Runs indefinitely in the background. For testing.
 # default value
 
 manual-importer: TAG = manual-dev
 manual-importer:
-	docker run -t -d --name importer -v $$(pwd)/import-data:/usr/src/importer/import-data --network=nsledilnik-db-net --env-file ../../.env nsledilnik/importer:$(TAG)
+	docker run -t -d --name importer -v $$(pwd)/import-data:/usr/src/nepremicnine_sledilnik/database/importer/import-data --network=nsledilnik-db-net --env-file ../../.env nsledilnik/importer:$(TAG)
 
 # Start container that automatically execute the importer script. When the job is done it exits and removes itself. Log file is also made.
 # default value
 
-auto-importer: TAG = auto-dev
-auto-importer:
-	docker run --rm --name importer -v $$(pwd)/import-data:/usr/src/importer/import-data --network=nsledilnik-db-net --env-file ../../.env nsledilnik/importer:$(TAG) > ../../logs/importer/importer-job-$$(date +"%y-%m-%d__%H-%M-%S").log
+start-importer: TAG = dev
+start-importer:
+	docker run --rm --name importer -v $$(pwd)/import-data:/usr/src/nepremicnine_sledilnik/database/importer/import-data --network=nsledilnik-db-net --env-file ../../.env nsledilnik/importer:$(TAG) > ../../logs/importer/importer-job-$$(date +"%y-%m-%d__%H-%M-%S").log
+
+stop-importer:
+	docker rm -f importer
+
+sh-importer:
+	docker exec -it importer sh
