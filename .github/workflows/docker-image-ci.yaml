@@ -2,7 +2,6 @@ name: Docker images build & push
 
 on:
   push:
-    branches: [master]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -12,18 +11,22 @@ on:
         required: true
 env:
   REGISTRY: "registry.digitalocean.com/nsledilnik"
-  IMAGE_NAME: "crawler"
+  #IMAGE_NAME: "crawler"
 
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ["crawler", "api"]
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3
 
       - name: Build container image
-        working-directory: ./crawler
-        run: docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7) .
+        #working-directory: ./ matrix.image }}
+        run: docker build -f ${{ matrix.image}}/Dockerfile . -t $(echo $REGISTRY)/${{ matrix.image}}:$(echo $GITHUB_SHA | head -c7)
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -34,7 +37,7 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Remove all old images
-        run: if [ ! -z "$(doctl registry repository list | grep "$(echo $IMAGE_NAME)")" ]; then doctl registry repository delete-manifest $(echo $IMAGE_NAME) $(doctl registry repository list-tags $(echo $IMAGE_NAME) | grep -o "sha.*") --force; else echo "No repository"; fi
+        run: if [ ! -z "$(doctl registry repository list | grep "${{matrix.image}}")" ]; then doctl registry repository delete-manifest $(echo $IMAGE_NAME) $(doctl registry repository list-tags ${{matrix.image}} | grep -o "sha.*") --force; else echo "No repository"; fi
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
+        run: docker push $(echo $REGISTRY)/${{matrix.image}}:$(echo $GITHUB_SHA | head -c7)
