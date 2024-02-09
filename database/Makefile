@@ -3,10 +3,10 @@ include ../.env
 TAG = dev
 #target
 start-db:
-	docker run --name nsledilnik-db -dp 3306:3306 --mount source=nsledilnik-db-vol,target=/var/lib/mysql --env-file ../.env --network=nsledilnik-db-net nsledilnik/database:$(TAG)
+	docker run --name nsledilnik-db -dp 3306:3306 --mount source=nsledilnik_db-vol,target=/var/lib/mysql --env-file ../.env --network=nsledilnik_backend-net nsledilnik/database:$(TAG)
 
 start-db-no-volume:
-	docker run --name nsledilnik-db -dp 3306:3306 --network=nsledilnik-db-net --env-file ../.env nsledilnik/database:$(TAG) 
+	docker run --name nsledilnik-db -dp 3306:3306 --network=nsledilnik_backend-net --env-file ../.env nsledilnik/database:$(TAG) 
 
 stop-db:
 	docker rm -f nsledilnik-db
