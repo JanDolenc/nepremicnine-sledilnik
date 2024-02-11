@@ -22,7 +22,7 @@ manual-importer:
 
 start-importer: TAG = dev
 start-importer:
-	docker run --rm --name importer -v $$(pwd)/import-data:/usr/src/nepremicnine_sledilnik/database/importer/import-data --network=nsledilnik_backend-net --env-file ../../.env nsledilnik/importer:$(TAG) > ../../logs/importer/importer-job-$$(date +"%y-%m-%d__%H-%M-%S").log
+	docker run --rm --name importer -v $$(pwd)/import-data:/usr/src/nepremicnine_sledilnik/database/importer/import-data --network=nsledilnik_backend-net --env-file ../../.env nsledilnik/importer:$(TAG) > ../../logs/importer/importer-job-$$(date +"%y-%m-%d__%H-%M").log
 
 stop-importer:
 	docker rm -f importer

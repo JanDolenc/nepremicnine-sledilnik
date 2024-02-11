@@ -1,3 +1,8 @@
+# IMPORT HELPER  - copy files to be imported and start importer
+*/5 * * * * /bin/bash /home/nepremicnine-sledilnik/scripts/import-helper.sh  >> /home/nepremicnine-sledilnik/logs/importer/import-helper-`date +\%y-\%m-\%d`.log 2>&1
+
+
+# SCRAPER ---------
 # Scrape by region
 
 # Day 1 - gorenjska
