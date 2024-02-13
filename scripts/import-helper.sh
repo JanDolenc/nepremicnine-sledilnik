@@ -30,7 +30,7 @@ echo ""
 
 # 2. START IMPORTING FILES
 echo "Starting importer!"
-docker run --rm --name importer -v /home/nepremicnine-sledilnik/database/importer/import-data:/usr/src/nepremicnine_sledilnik/database/importer/import-data --network=nsledilnik_backend-net --env-file /home/nepremicnine-sledilnik/.env nsledilnik/importer:1.1.1 > /home/nepremicnine-sledilnik/logs/importer/importer-job-$(date +"%y-%m-%d__%H-%M").log
+docker run --rm --name importer -v /home/nepremicnine-sledilnik/database/importer/import-data:/usr/src/nepremicnine_sledilnik/database/importer/import-data --network=nsledilnik_backend-net --env-file /home/nepremicnine-sledilnik/.env nsledilnik/importer:1.1.2 > /home/nepremicnine-sledilnik/logs/importer/importer-job-$(date +"%y-%m-%d__%H-%M").log
 
 echo ""
 echo "Finished at $(date)"
