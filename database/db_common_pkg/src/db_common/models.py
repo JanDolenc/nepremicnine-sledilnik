@@ -20,7 +20,7 @@ class OglasBase(SQLModel):
 class OglasBasic(OglasBase):
     url: str = Field(unique=True, index=True)
     regija: str
-    agencija: str
+    agencija: Optional[str]
     posredovanje: str
     zemljisce: Optional[condecimal(
         max_digits=12, decimal_places=2)] = Field(default=None)
