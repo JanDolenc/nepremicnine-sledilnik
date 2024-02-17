@@ -1,8 +1,14 @@
 # Ignore Scrapy output files
-*.log
-*.jl
-*.json
-*.csv
+crawler/**/*.log
+crawler/**/*.json
+#*.jl
+#*.csv
+
+# Ignore (testing) files for importer
+database/importer/**/*.json
+
+# Ignore logs
+logs/**/*.log
 
 # Ignore Scrapy egg files
 *.egg-info/
@@ -16,3 +22,27 @@
 # Ignore .env file
 *.env*
 !.env.example
+
+
+# Compiled output
+#/dist
+#/tmp
+#/out-tsc
+#/bazel-out
+
+# Node
+frontend/node_modules
+#npm-debug.log
+#yarn-error.log
+
+# Visual Studio Code
+.vscode/
+
+# Miscellaneous
+frontend/.angular/cache
+#.sass-cache/
+#/connect.lock
+#/coverage
+#/libpeerconnection.log
+#testem.log
+#/typings
