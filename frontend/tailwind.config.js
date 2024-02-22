@@ -10,7 +10,10 @@ module.exports = {
       },
       colors: {
         "dark-sea": "#1868B7",
-        "sea-blue": "#2081E2",
+        "sea-blue": {
+          100: "#2e8dee",
+          200: "#2081E2",
+        },
         "marina-blue": "#15B2E5",
         aqua: "#2BCDE4",
       },
