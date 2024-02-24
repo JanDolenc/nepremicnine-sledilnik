@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
 import { SearchBarComponent } from '../../ui/search-bar/search-bar.component';
-import { SearchService } from '../../data-access/search.service';
-import { Ad } from '../../utils/ad';
 
 @Component({
   selector: 'app-search-interface',
@@ -10,15 +10,10 @@ import { Ad } from '../../utils/ad';
   templateUrl: './search-interface.page.html',
 })
 export class SearchInterfacePage {
-  constructor(private searchService: SearchService) {}
+  constructor(private router: Router) {}
 
-  ad: Ad | undefined;
-
-  getAdData(url: string) {
-    console.log('this is from parent', url);
-
-    this.ad = this.searchService.getAdData();
-
-    console.log('this log is from parent value of ad from service ', this.ad);
+  navigateToResultPage(url: string) {
+    let encodeUrl = encodeURIComponent(url);
+    this.router.navigate([`/search/url/${encodeUrl}`]);
   }
 }
