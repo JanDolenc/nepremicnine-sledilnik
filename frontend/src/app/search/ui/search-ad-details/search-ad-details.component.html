@@ -1,0 +1,125 @@
+<div>
+  <h1 class="text-neutral-900 font-semibold text-2xl mb-6">{{ ad.naslov }}</h1>
+  <div class="ns-ad-details ns-container grid grid-cols-4 gap-11">
+    <div>
+      <span class="ns-label font-normal text-xs text-neutral-600 mb-1"
+        >Oglas zaznan</span
+      >
+      <div
+        class="bg-neutral-100 rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
+      >
+        {{ ad.detected_ts * 1000 | date : "dd.MM.yyyy" }}
+      </div>
+    </div>
+    <div>
+      <span class="ns-label font-normal text-xs text-neutral-600 mb-1"
+        >Zadnja sprememba</span
+      >
+      <div
+        class="bg-neutral-100 rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
+      >
+        {{ ad.updated_ts * 1000 | date : "dd.MM.yyyy" }}
+      </div>
+    </div>
+    <div>
+      <span class="ns-label font-normal text-xs text-neutral-600 mb-1"
+        >Status</span
+      >
+      <div
+        class="bg-neutral-100 rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
+      >
+        Aktiven
+      </div>
+    </div>
+    <div>
+      <span class="ns-label font-normal text-xs text-neutral-600 mb-1"
+        >Posredovanje</span
+      >
+      <div
+        class="bg-neutral-100 rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
+      >
+        {{ ad.posredovanje }}
+      </div>
+    </div>
+    <div>
+      <span class="ns-label font-normal text-xs text-neutral-600 mb-1"
+        >Vrsta</span
+      >
+      <div
+        class="bg-neutral-100 rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
+      >
+        {{ ad.vrsta }}
+      </div>
+    </div>
+    <div>
+      <span class="ns-label font-normal text-xs text-neutral-600 mb-1"
+        >tip</span
+      >
+      <div
+        class="bg-neutral-100 rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
+      >
+        {{ ad.tip }}
+      </div>
+    </div>
+    <div>
+      <span class="ns-label font-normal text-xs text-neutral-600 mb-1"
+        >Nasdstropje</span
+      >
+      <div
+        class="bg-neutral-100 rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
+      >
+        {{ ad.nadstropje }}
+      </div>
+    </div>
+    <div>
+      <span class="ns-label font-normal text-xs text-neutral-600 mb-1"
+        >Velikost</span
+      >
+      <div
+        class="bg-neutral-100 rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
+      >
+        {{ ad.velikost }}
+      </div>
+    </div>
+    <div>
+      <span class="ns-label font-normal text-xs text-neutral-600 mb-1"
+        >Zemljišče</span
+      >
+      <div
+        class="bg-neutral-100 rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
+      >
+        {{ ad.zemljisce }}
+      </div>
+    </div>
+    <div>
+      <span class="ns-label font-normal text-xs text-neutral-600 mb-1"
+        >Leto izgradnje</span
+      >
+      <div
+        class="bg-neutral-100 rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
+      >
+        {{ ad.leto_izgradnje }}
+      </div>
+    </div>
+    <div>
+      <span class="ns-label font-normal text-xs text-neutral-600 mb-1"
+        >regija</span
+      >
+      <div
+        class="bg-neutral-100 rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
+      >
+        {{ ad.regija }}
+      </div>
+    </div>
+    <div>
+      <span class="ns-label font-normal text-xs text-neutral-600 mb-1"
+        >Agencija</span
+      >
+      <div
+        class="bg-neutral-100 rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
+      >
+        {{ ad.agencija }}
+      </div>
+    </div>
+  </div>
+</div>

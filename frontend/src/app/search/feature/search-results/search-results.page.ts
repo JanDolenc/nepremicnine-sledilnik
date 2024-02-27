@@ -3,15 +3,16 @@ import { ActivatedRoute } from '@angular/router';
 
 import { SearchService } from '../../data-access/search.service';
 import { Ad } from '../../utils/ad';
+import { SearchAdDetailsComponent } from '../../ui/search-ad-details/search-ad-details.component';
 
 @Component({
   selector: 'app-search-results',
   standalone: true,
-  imports: [],
+  imports: [SearchAdDetailsComponent],
   templateUrl: './search-results.page.html',
 })
 export class SearchResultsPage implements OnInit {
-  ad: Ad | undefined;
+  ad!: Ad;
 
   constructor(
     private route: ActivatedRoute,
