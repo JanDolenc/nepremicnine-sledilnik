@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { SearchBarComponent } from '../../ui/search-bar/search-bar.component';
+import { SearchInstructionsComponent } from '../../ui/search-instructions/search-instructions.component';
 
 @Component({
   selector: 'app-search-interface',
   standalone: true,
-  imports: [SearchBarComponent],
+  imports: [SearchBarComponent, SearchInstructionsComponent],
   templateUrl: './search-interface.page.html',
 })
 export class SearchInterfacePage {
