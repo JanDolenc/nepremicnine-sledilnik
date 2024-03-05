@@ -1,5 +1,5 @@
 <div>
-  <div class="ns-min-current-max-price flex gap-11">
+  <div class="ns-min-current-max-price flex gap-11 mb-16">
     <app-search-ad-item
       [label]="'Najnižja cena'"
       [value]="minPrice"
@@ -17,4 +17,5 @@
       [format]="'price'"
     />
   </div>
+  <app-line-chart [chartData]="chartData" />
 </div>
