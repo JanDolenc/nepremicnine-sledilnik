@@ -9,7 +9,7 @@
   } @switch(format) { @case('date') {
   <div
     class="{{
-      bgColorClass
+      customClass
     }} rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
   >
     <!-- value is timestamp in seconds. Multiply by 1000 to get ms and then format as date -->
@@ -19,7 +19,7 @@
   } @case('price') {
   <div
     class="{{
-      bgColorClass
+      customClass
     }} rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
   >
     {{ value | currency : "EUR" : "symbol" : "1.2-2" }}
@@ -28,7 +28,7 @@
   } @case('sq-meter') {
   <div
     class="{{
-      bgColorClass
+      customClass
     }} rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
   >
     {{ value | number : "1.2-2" }} m<span class="align-super text-sm">2</span>
@@ -37,7 +37,7 @@
   } @default {
   <div
     class="{{
-      bgColorClass
+      customClass
     }} rounded-xl px-6 text-neutral-600 font-semibold text-lg py-3"
   >
     {{ value }}

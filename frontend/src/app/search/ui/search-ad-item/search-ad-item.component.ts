@@ -12,5 +12,6 @@ export class SearchAdItemComponent {
   @Input({ required: true }) value!: any;
   // avaiable formats: date, price, sq-meter, string
   @Input() format: string = 'string';
-  @Input() bgColorClass: string = 'bg-neutral-100';
+  // custom class for adding styling - bg color
+  @Input() customClass: string = 'bg-neutral-100';
 }
