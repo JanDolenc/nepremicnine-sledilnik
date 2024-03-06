@@ -28,8 +28,8 @@
     </a>
   </h1>
   }
-  <div class="ns-ad-details ns-container flex flex-col gap-6">
-    <div class="flex gap-6">
+  <div class="ns-ad-details ns-container flex flex-col gap-7">
+    <div class="flex gap-8">
       <app-search-ad-item
         [label]="'Oglas zaznan'"
         [value]="ad.detected_ts"
@@ -45,7 +45,7 @@
         [value]="isAdActive(ad.price_data[ad.price_data.length - 1].record_ts)"
       />
     </div>
-    <div class="flex gap-6">
+    <div class="flex gap-8">
       <app-search-ad-item [label]="'Regija'" [value]="ad.regija" />
       <app-search-ad-item [label]="'Posredovanje'" [value]="ad.posredovanje" />
       <app-search-ad-item [label]="'Vrsta'" [value]="ad.vrsta" />
@@ -56,7 +56,7 @@
       }
     </div>
 
-    <div class="flex gap-6">
+    <div class="flex gap-8">
       <app-search-ad-item
         [label]="'Velikost'"
         [value]="ad.velikost"
@@ -80,7 +80,7 @@
       <app-search-ad-item [label]="'Nadstropje'" [value]="ad.nadstropje" />
       }
     </div>
-    <div class="flex gap-6">
+    <div class="flex gap-8">
       @if(ad.agencija){
       <app-search-ad-item [label]="'Agencija'" [value]="ad.agencija" />
       }
