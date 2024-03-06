@@ -13,14 +13,58 @@ export class LineChartComponent {
   lineChartData!: any;
 
   ngOnInit(): void {
-    this.lineChartOptions = { responsive: true };
+    this.lineChartOptions = {
+      responsive: true,
+      locale: 'sl',
+      scales: {
+        x: {
+          ticks: {
+            font: {
+              size: 16,
+            },
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Cena  €',
+            font: {
+              size: 14,
+            },
+          },
+          ticks: {
+            font: {
+              size: 16,
+            },
+          },
+        },
+      },
+      plugins: {
+        tooltip: {
+          position: 'nearest',
+          backgroundColor: 'rgba(238, 238, 238, 1)',
+          titleColor: 'rgba(18, 18, 18, 1)',
+          bodyColor: 'rgba(18, 18, 18, 1)',
+          titleFont: {
+            size: 15,
+          },
+          bodyFont: {
+            size: 16,
+          },
+        },
+        legend: {
+          display: false,
+        },
+      },
+    };
+
     this.lineChartData = {
       labels: this.chartData.map((item) => item.x_axis),
       datasets: [
         {
           data: this.chartData.map((item) => item.data),
           label: 'Cena',
-          tension: 0.3,
+          tension: 0.2,
         },
       ],
     };
