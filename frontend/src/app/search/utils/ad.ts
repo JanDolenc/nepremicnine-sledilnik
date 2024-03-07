@@ -21,3 +21,19 @@ export interface Ad {
   updated_ts: number;
   price_data: Price[];
 }
+
+export interface SimilarAd {
+  referencna_st: number;
+  naslov: string;
+  vrsta: string;
+  tip: string | null;
+  velikost: number;
+  leto_izgradnje: number | null;
+  nadstropje: string | null;
+  regija: string;
+  cena: number;
+}
+
+export interface SimilarAds {
+  similar_oglasi: SimilarAd[];
+}

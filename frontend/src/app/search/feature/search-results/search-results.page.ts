@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { switchMap } from 'rxjs';
 
 import { SearchService } from '../../data-access/search.service';
-import { Ad } from '../../utils/ad';
 import { SearchAdDetailsComponent } from '../../ui/search-ad-details/search-ad-details.component';
 import { SearchAdPriceComponent } from '../../ui/search-ad-price/search-ad-price.component';
+
+import { Ad, SimilarAds } from '../../utils/ad';
 
 @Component({
   selector: 'app-search-results',
@@ -14,6 +16,7 @@ import { SearchAdPriceComponent } from '../../ui/search-ad-price/search-ad-price
 })
 export class SearchResultsPage implements OnInit {
   ad!: Ad;
+  similarAds!: SimilarAds;
 
   constructor(
     private route: ActivatedRoute,
@@ -21,17 +24,33 @@ export class SearchResultsPage implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getAdDetails();
+    this.getData();
   }
 
-  getAdDetails(): void {
+  getData(): void {
     const url = decodeURIComponent(
       String(this.route.snapshot.paramMap.get('url'))
     );
 
-    //this.ad = this.searchService.getAdDetails(url);
-    this.searchService.getAdDetails(url).subscribe((ad) => (this.ad = ad));
-
-    console.log('in results this is ad from service: ', this.ad);
+    /** Make sequential requests
+     *
+     * getSimilarAds() request needs data from the getAdDetails().
+     * getadDetails() -> complete -> getSimilarAds(getAdDetails response)
+     */
+    // make first request
+    this.searchService
+      .getAdDetails(url)
+      .pipe(
+        // when complete run the second request
+        switchMap((ad) => {
+          this.ad = ad;
+          return this.searchService.getSimilarAds(ad);
+        })
+      )
+      .subscribe(
+        (similarAds) =>
+          // handle the second request response
+          (this.similarAds = similarAds)
+      );
   }
 }
