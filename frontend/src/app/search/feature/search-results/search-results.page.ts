@@ -1,22 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs';
+import { map, switchMap } from 'rxjs';
 
 import { SearchService } from '../../data-access/search.service';
 import { SearchAdDetailsComponent } from '../../ui/search-ad-details/search-ad-details.component';
 import { SearchAdPriceComponent } from '../../ui/search-ad-price/search-ad-price.component';
+import { SearchSimilarAdsComponent } from '../../ui/search-similar-ads/search-similar-ads.component';
 
-import { Ad, SimilarAds } from '../../utils/ad';
+import { Ad, SimilarAd } from '../../utils/ad';
 
 @Component({
   selector: 'app-search-results',
   standalone: true,
-  imports: [SearchAdDetailsComponent, SearchAdPriceComponent],
+  imports: [
+    SearchAdDetailsComponent,
+    SearchAdPriceComponent,
+    SearchSimilarAdsComponent,
+  ],
   templateUrl: './search-results.page.html',
 })
 export class SearchResultsPage implements OnInit {
   ad!: Ad;
-  similarAds!: SimilarAds;
+  // Unnested SimilarAds
+  similarAds!: SimilarAd[];
 
   constructor(
     private route: ActivatedRoute,
@@ -47,10 +53,8 @@ export class SearchResultsPage implements OnInit {
           return this.searchService.getSimilarAds(ad);
         })
       )
-      .subscribe(
-        (similarAds) =>
-          // handle the second request response
-          (this.similarAds = similarAds)
-      );
+      // handle the second request response
+      .pipe(map((nestedSimilarAds) => nestedSimilarAds.similar_oglasi))
+      .subscribe((similarAds) => (this.similarAds = similarAds));
   }
 }
