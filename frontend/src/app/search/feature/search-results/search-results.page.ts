@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map, switchMap } from 'rxjs';
 
 import { SearchService } from '../../data-access/search.service';
@@ -20,24 +20,30 @@ import { Ad, SimilarAd } from '../../utils/ad';
   templateUrl: './search-results.page.html',
 })
 export class SearchResultsPage implements OnInit {
-  ad!: Ad;
+  ad: Ad | undefined;
   // Unnested SimilarAds
-  similarAds!: SimilarAd[];
+  similarAds: SimilarAd[] | undefined;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private searchService: SearchService
   ) {}
 
   ngOnInit(): void {
-    this.getData();
+    this.route.params.subscribe((params) => {
+      const url = decodeURIComponent(String(params['url']));
+      this.getData(url);
+    });
   }
 
-  getData(): void {
-    const url = decodeURIComponent(
-      String(this.route.snapshot.paramMap.get('url'))
-    );
+  similarAdClicked(referencna_st: string) {
+    this.similarAds = undefined;
+    this.ad = undefined;
+    this.router.navigate([`/search/url/${referencna_st}`]);
+  }
 
+  getData(url: string): void {
     /** Make sequential requests
      *
      * getSimilarAds() request needs data from the getAdDetails().

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { SimilarAd } from '../../utils/ad';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
@@ -11,8 +11,9 @@ import { CurrencyPipe, DecimalPipe } from '@angular/common';
 })
 export class SearchSimilarAdsComponent {
   @Input({ required: true }) similarAds!: SimilarAd[];
+  @Output() adClickedEvent = new EventEmitter<string>();
 
-  ngOnInit() {
-    console.log('this are simialr ADS on dest -- ', this.similarAds);
+  selectedAd(referencna_st: number) {
+    this.adClickedEvent.emit(String(referencna_st));
   }
 }

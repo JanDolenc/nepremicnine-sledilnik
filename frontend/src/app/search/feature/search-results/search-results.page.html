@@ -6,6 +6,9 @@
 @if(similarAds){
 
 <div class="mt-56 mb-16">
-  <app-search-similar-ads [similarAds]="similarAds" />
+  <app-search-similar-ads
+    [similarAds]="similarAds"
+    (adClickedEvent)="similarAdClicked($event)"
+  />
 </div>
 } }

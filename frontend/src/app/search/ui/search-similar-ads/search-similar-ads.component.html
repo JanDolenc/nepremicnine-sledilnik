@@ -1,6 +1,6 @@
 <div class="mx-auto w-full max-w-[2080px]">
   <h2 class="text-neutral-900 text-2xl font-semibold mb-6">
-    Podojbne nepremičnine v regiji z nižjo ceno ({{ similarAds.length }})
+    Podobne nepremičnine v regiji z nižjo ceno ({{ similarAds.length }})
   </h2>
   <div class="mt-10 flex flex-col">
     <div class="-my-2 -mx-4 sm:-mx-6 lg:-mx-8">
@@ -19,6 +19,12 @@
                 class="sticky top-16 bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600"
               >
                 Naslov
+              </th>
+              <th
+                scope="col"
+                class="sticky top-16 bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600"
+              >
+                Vrsta
               </th>
               <th
                 scope="col"
@@ -54,16 +60,24 @@
           </thead>
           <tbody>
             @for (ad of similarAds; track $index) {
-            <tr class="hover:bg-neutral-100">
+            <tr
+              (click)="selectedAd(ad.referencna_st)"
+              class="hover:bg-neutral-100 cursor-pointer"
+            >
               <td
                 class="whitespace-nowrap pl-6 pr-3 py-6 text-base font-medium text-neutral-900 rounded-l-lg"
               >
-                {{ $index }}
+                {{ $index + 1 }}
               </td>
               <td
                 class="whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900"
               >
                 {{ ad.naslov }}
+              </td>
+              <td
+                class="whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900"
+              >
+                {{ ad.vrsta }}
               </td>
               <td
                 class="whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900"
