@@ -1,0 +1,14 @@
+@if(ad) {
+<div class="flex justify-around gap-12 xl:gap-0 mt-16">
+  <app-search-ad-details [ad]="ad" />
+  <app-search-ad-price [price_data]="ad.price_data" />
+</div>
+@if(similarAds){
+
+<div class="mt-56 mb-16">
+  <app-search-similar-ads
+    [similarAds]="similarAds"
+    (adClickedEvent)="similarAdClicked($event)"
+  />
+</div>
+} }

@@ -1,3 +1,8 @@
-<h1 class="text-4xl font-bold underline text-purple-500 m-5">Hello mom!</h1>
-
-<router-outlet />
+<div class="flex flex-col min-h-screen">
+  <app-header class="mx-auto w-full max-w-[2560px] sticky top-0 z-50" />
+  <main
+    class="flex-grow px-4 md:px-6 lg:px-8 2xl:px-16 mx-auto w-full max-w-[2560px]"
+  >
+    <router-outlet />
+  </main>
+</div>

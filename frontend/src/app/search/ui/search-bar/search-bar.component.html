@@ -1,0 +1,33 @@
+<div class="flex flex-col items-center">
+  <div class="ns-title text-center mb-8">
+    <h1 class="font-semibold text-2xl text-neutral-900">
+      Poglej zgodovino za nepremičnino, ki te zanima.
+    </h1>
+    <span class="font-semibold text-base text-neutral-900 opacity-80"
+      >Brskaj. Kopiraj. Prilepi.</span
+    >
+  </div>
+  <div>
+    <form class="flex flex-col items-center">
+      <div class="mb-4">
+        <input
+          class="bg-neutral-50 hover:bg-neutral-100 min-w-96 focus-visible:outline-1 focus-visible:outline-neutral-400 rounded-xl border-neutral-900 p-2 text-base"
+          type="url"
+          name="ad-url"
+          id="ad-url"
+          #search
+          placeholder="Prilepi URL oglasa"
+        />
+      </div>
+      <div>
+        <button
+          (click)="emitUrl(search.value)"
+          type="button"
+          class="bg-sea-blue-200 transition-colors duration-200 hover:bg-sea-blue-100 text-white font-semibold px-6 py-3 rounded-xl"
+        >
+          Prikaži zgodovino
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

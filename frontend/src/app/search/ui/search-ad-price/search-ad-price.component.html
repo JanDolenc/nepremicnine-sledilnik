@@ -1,0 +1,21 @@
+<div>
+  <div class="ns-min-current-max-price flex justify-center gap-14 mb-12">
+    <app-search-ad-item
+      [label]="'Najnižja cena'"
+      [value]="minPrice"
+      [format]="'price'"
+    />
+    <app-search-ad-item
+      [label]="'Trenutna cena'"
+      [value]="currentPrice"
+      [format]="'price'"
+      [customClass]="'bg-sea-blue-200 text-white'"
+    />
+    <app-search-ad-item
+      [label]="'Najvišja cena'"
+      [value]="maxPrice"
+      [format]="'price'"
+    />
+  </div>
+  <app-line-chart [chartData]="chartData" />
+</div>
