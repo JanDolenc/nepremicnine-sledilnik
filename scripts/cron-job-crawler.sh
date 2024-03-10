@@ -97,7 +97,7 @@ if [ "$wg" = "wg-off" ]; then
 else
     # Step 2a - Select random config
     # Define an array of strings
-    wg_configs=("wg1" "wg2" "wg3" "wg5" "wg6" "wg7" "wg8" "wg9" "wg10" "wg11" "wg12")
+    wg_configs=("wg2" "wg3" "wg5" "wg6" "wg7" "wg8" "wg9" "wg10" "wg11" "wg12" "wg13" "wg14" "wg15")
     # Configs for testing
     #wg_configs=("wg5" "wg5")
 
