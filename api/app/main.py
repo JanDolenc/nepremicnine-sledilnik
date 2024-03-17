@@ -58,3 +58,13 @@ async def read_similar_oglasi(*, session: Session = Depends(get_session), id: in
         raise HTTPException(
             status_code=404, detail=f"Similar ads for this ad  not found.")
     return similar_oglasi
+
+
+@app.get("/analytics/median")
+async def read_median(*, session: Session = Depends(get_session)):
+    median = crud.get_median(session=session)
+
+    if not median:
+        raise HTTPException(
+            status_code=404, detail="Something went wrong.")
+    return median
