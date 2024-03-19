@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
@@ -7,8 +7,69 @@ import { BaseChartDirective } from 'ng2-charts';
   imports: [BaseChartDirective],
   templateUrl: './bar-chart.component.html',
 })
-export class BarChartComponent {
+export class BarChartComponent implements OnInit {
   @Input({ required: true }) chartData!: any[];
   barChartOptions!: any;
   barChartData!: any;
+
+  ngOnInit(): void {
+    this.barChartData = {
+      labels: this.chartData.map((item) => item.regija),
+      datasets: [
+        {
+          data: this.chartData.map((item) => item.hisa),
+          label: 'Hiša',
+        },
+        {
+          data: this.chartData.map((item) => item.stanovanje),
+          label: 'Stanovanje',
+        },
+      ],
+    };
+
+    this.barChartOptions = {
+      responsive: false,
+      locale: 'sl',
+      scales: {
+        x: {
+          ticks: {
+            font: {
+              size: 16,
+            },
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Cena  €',
+            font: {
+              size: 14,
+            },
+          },
+          ticks: {
+            font: {
+              size: 16,
+            },
+          },
+        },
+      },
+      plugins: {
+        tooltip: {
+          position: 'nearest',
+          backgroundColor: 'rgba(238, 238, 238, 1)',
+          titleColor: 'rgba(18, 18, 18, 1)',
+          bodyColor: 'rgba(18, 18, 18, 1)',
+          titleFont: {
+            size: 15,
+          },
+          bodyFont: {
+            size: 16,
+          },
+        },
+        legend: {
+          display: false,
+        },
+      },
+    };
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { BarChartComponent } from '../../../shared/ui/bar-chart/bar-chart.component';
 import { Median } from '../../utils/median';
 
@@ -8,11 +8,11 @@ import { Median } from '../../utils/median';
   imports: [BarChartComponent],
   templateUrl: './analytics-median-chart.component.html',
 })
-export class AnalyticsMedianChartComponent {
+export class AnalyticsMedianChartComponent implements OnInit {
   @Input({ required: true }) median!: Median;
-  chartData: any[] = [''];
+  chartData: any[] = [];
 
-  ngOnInit() {
-    console.log('median values in DESTINATION', this.median);
+  ngOnInit(): void {
+    this.chartData = this.median.median;
   }
 }
