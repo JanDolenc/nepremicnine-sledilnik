@@ -2,7 +2,7 @@ from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session
 
-from db_common.models import OglasReadWithPrice, SimilarOglasiRead
+from db_common.models import OglasReadWithPrice, SimilarOglasiRead, MedianRead
 from db_common.database import engine, create_db_and_tables
 from app import crud
 
@@ -61,7 +61,7 @@ async def read_similar_oglasi(*, session: Session = Depends(get_session), id: in
 
 
 @app.get("/analytics/median")
-async def read_median(*, session: Session = Depends(get_session)):
+async def read_median(*, session: Session = Depends(get_session)) -> MedianRead:
     median = crud.get_median(session=session)
 
     if not median:

@@ -103,9 +103,6 @@ def get_median(session: Session):
         )
         .join(OglasCena)
         .where(
-            # Oglas.id.in_([4, 6, 7, 2570, 2571, 1220,
-            #             1221, 5170, 5171, 5404, 5405]),
-            # Oglas.id.between(1, 14),
             OglasCena.record_ts == (
                 select(func.max(OglasCena.record_ts))
                 .where(Oglas.id == OglasCena.oglas_id)
@@ -117,66 +114,39 @@ def get_median(session: Session):
 
     db_data = session.exec(statement).all()
 
-    sorted_data_by_regija_vrsta: dict = {}
+    # group db data by regija and vrsta
+    grouped_data: dict = {}
 
-    for regija, vrsta, avg_price in db_data:
+    for regija, vrsta, price_per_m2 in db_data:
         key = (regija, vrsta)
 
-        if not sorted_data_by_regija_vrsta.get(key):
-            sorted_data_by_regija_vrsta[key] = []
+        if not grouped_data.get(key):
+            grouped_data[key] = []
 
-        sorted_data_by_regija_vrsta[key].append(avg_price)
+        grouped_data[key].append(price_per_m2)
 
-       # print("key value -------", key, avg_price)
-
-    print('sorted ---', sorted_data_by_regija_vrsta)
-
-    for item in sorted_data_by_regija_vrsta.items():
-
-        print('item ->', item)
-
-    # print("THIS IS GRUPED DATA ----", grouped_data)
-
+    # calculate median values for every regija and vrsta
     median_values: dict = {}
-    for key, prices in sorted_data_by_regija_vrsta.items():
+    for key, prices in grouped_data.items():
 
+        # create a new key - regija
         if not median_values.get(key[1]):
             median_values[key[1]] = {key[0]: median(prices)}
+        # append to existing key
         else:
             median_values[key[1]][key[0]] = median(prices)
 
-        # median_values[key] = median(prices)
-        print('THIS is key -y-y-y-y', key)
-        print('THISISI key !!11111 ---', key[1])
-        print('this is prices-y-y--', prices)
-        print()
-        print()
+    print()
+    print("median db_data count ---", len(db_data))
 
-    print()
-    print()
-    print()
-    print()
-    print('THESE ARE median', median_values)
-
-    #
-    # print("results  ---", db_data)
-    # print("results  ---", type(db_data[0]))
-    print("results count ---", len(db_data))
-
-    print()
-    print()
-    print()
+    # prepare data for return
     median_list: list = []
 
     for key, value in median_values.items():
         item = {'regija': key, 'hisa': value.get(
             'Hiša'), 'stanovanje': value.get('Stanovanje')}
         median_list.append(item)
-        print(item)
 
-    print()
-    print('median list', median_list
-          )
     result: dict = {
 
         'period': 'all time',

@@ -78,6 +78,17 @@ class SimilarOglasiRead(SQLModel):
     similar_oglasi: list[SimilarOglasReadWithPrice]
 
 
+class MedianObject(SQLModel):
+    regija: str
+    hisa: float
+    stanovanje: float
+
+
+class MedianRead(SQLModel):
+    period: str
+    median: list[MedianObject]
+
+
 # regija labels to regija values in db
 regija_mapped: dict = {
     'gorenjska': 'Gorenjska',
