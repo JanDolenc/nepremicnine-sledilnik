@@ -154,3 +154,30 @@ def get_median(session: Session):
     }
 
     return result
+
+
+def get_active_ads(session: Session, year: int, month: int):
+    statement = (
+        select(
+            Oglas.regija,
+            Oglas.vrsta,
+            Oglas.tip,
+            func.count(Oglas.id)
+        )
+        .join(OglasCena)
+        .where(
+            OglasCena.record_ts == (
+                select(func.max(OglasCena.record_ts))
+                .where(Oglas.id == OglasCena.oglas_id)
+                .where(func.year(func.from_unixtime(OglasCena.record_ts)) == year)
+                .where(func.month(func.from_unixtime(OglasCena.record_ts)) == month)
+                .scalar_subquery()
+                .correlate(Oglas)
+            )
+        )
+        .group_by(Oglas.regija, Oglas.vrsta, Oglas.tip)
+        .order_by(Oglas.regija, Oglas.vrsta, Oglas.tip)
+    )
+
+    results = session.exec(statement).all()
+    return results

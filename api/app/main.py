@@ -68,3 +68,13 @@ async def read_median(*, session: Session = Depends(get_session)) -> MedianRead:
         raise HTTPException(
             status_code=404, detail="Something went wrong.")
     return median
+
+
+@app.get("/analytics/active-ads")
+async def read_active_ads(*, session: Session = Depends(get_session), year: int, month: int):
+    active_ads = crud.get_active_ads(session=session, year=year, month=month)
+
+    if not active_ads:
+        raise HTTPException(
+            status_code=404, detail="Something went wrong.")
+    return active_ads
