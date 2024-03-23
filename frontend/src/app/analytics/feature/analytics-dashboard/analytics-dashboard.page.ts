@@ -4,16 +4,23 @@ import { AnalyticsService } from '../../data-access/analytics.service';
 import { Median } from '../../utils/median';
 import {
   getCurrentYearMonth,
+  groupAdsByVrsta,
   groupAdsRegijaVrsta,
 } from '../../utils/analytics-helpers';
 import { ActiveAd, RegijaVrstaCount } from '../../utils/active-ads';
 import { BarChartComponent } from '../../../shared/ui/bar-chart/bar-chart.component';
 import { DatePipe } from '@angular/common';
+import { DoughnutChartComponent } from '../../../shared/ui/doughnut-chart/doughnut-chart.component';
 
 @Component({
   selector: 'app-analytics-dashboard',
   standalone: true,
-  imports: [AnalyticsMedianChartComponent, BarChartComponent, DatePipe],
+  imports: [
+    AnalyticsMedianChartComponent,
+    BarChartComponent,
+    DoughnutChartComponent,
+    DatePipe,
+  ],
   templateUrl: './analytics-dashboard.page.html',
 })
 export class AnalyticsDashboardPage implements OnInit {
@@ -56,6 +63,10 @@ export class AnalyticsDashboardPage implements OnInit {
 
   today = new Date();
 
+  adsByvrsta!: any;
+  doughnutChartStanovanjeData: any;
+  doughnutChartHisaData: any;
+
   ngOnInit(): void {
     this.getMedian();
     this.getActiveAds();
@@ -63,16 +74,12 @@ export class AnalyticsDashboardPage implements OnInit {
     setTimeout(() => {
       console.log(this.activeAds);
       this.sumActiveAds();
-      console.log(
-        'result',
-        this.adsGroupedRegijaVrsta,
-        this.stanovanjeSum,
-        this.hisaSum,
-        this.hisaSum + this.stanovanjeSum
-      );
+      this.prepareDataDoughnutChart();
+      console.log('result', this.adsGroupedRegijaVrsta);
     }, 1000);
 
     setTimeout(() => {
+      // chart ads by region
       this.adsByRegion = {
         labels: [
           'Gorenjska',
@@ -123,5 +130,31 @@ export class AnalyticsDashboardPage implements OnInit {
         this.stanovanjeSum += item.count;
       }
     });
+  }
+
+  prepareDataDoughnutChart(): void {
+    this.adsByvrsta = groupAdsByVrsta(this.activeAds);
+
+    this.doughnutChartStanovanjeData = {
+      labels: Object.keys(this.adsByvrsta.stanovanja),
+      datasets: [
+        {
+          data: Object.values(this.adsByvrsta.stanovanja),
+
+          label: 'Stanovanje',
+        },
+      ],
+    };
+
+    this.doughnutChartHisaData = {
+      labels: Object.keys(this.adsByvrsta.hise),
+      datasets: [
+        {
+          data: Object.values(this.adsByvrsta.hise),
+
+          label: 'Hiša',
+        },
+      ],
+    };
   }
 }

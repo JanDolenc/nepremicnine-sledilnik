@@ -36,3 +36,16 @@ export const groupAdsRegijaVrsta = (
     return acc;
   }, [] as { regija: string; vrsta: string; count: number }[]);
 };
+
+export const groupAdsByVrsta = (activeAds: ActiveAd[]) => {
+  const groupedAds: any = { hise: {}, stanovanja: {} };
+
+  activeAds.forEach((item) => {
+    if (item.vrsta === 'Hiša') {
+      groupedAds.hise[item.tip] = item.count;
+    } else {
+      groupedAds.stanovanja[item.tip] = item.count;
+    }
+  });
+  return groupedAds;
+};
