@@ -7,11 +7,13 @@ import {
   groupAdsRegijaVrsta,
 } from '../../utils/analytics-helpers';
 import { ActiveAd, RegijaVrstaCount } from '../../utils/active-ads';
+import { BarChartComponent } from '../../../shared/ui/bar-chart/bar-chart.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-analytics-dashboard',
   standalone: true,
-  imports: [AnalyticsMedianChartComponent],
+  imports: [AnalyticsMedianChartComponent, BarChartComponent, DatePipe],
   templateUrl: './analytics-dashboard.page.html',
 })
 export class AnalyticsDashboardPage implements OnInit {
@@ -23,6 +25,37 @@ export class AnalyticsDashboardPage implements OnInit {
   hisaSum: number = 0;
   stanovanjeSum: number = 0;
   adsGroupedRegijaVrsta: RegijaVrstaCount[] = [];
+  adsByRegion: any;
+  customChartOptions: any = {
+    scales: {
+      x: {
+        stacked: true,
+        ticks: {
+          font: {
+            size: 16,
+          },
+        },
+      },
+      y: {
+        stacked: true,
+        title: {
+          display: true,
+          text: 'Št. aktivnih oglasov',
+          font: {
+            size: 13,
+          },
+        },
+        ticks: {
+          font: {
+            size: 16,
+          },
+        },
+      },
+    },
+  };
+
+  today = new Date();
+
   ngOnInit(): void {
     this.getMedian();
     this.getActiveAds();
@@ -38,6 +71,34 @@ export class AnalyticsDashboardPage implements OnInit {
         this.hisaSum + this.stanovanjeSum
       );
     }, 1000);
+
+    setTimeout(() => {
+      this.adsByRegion = {
+        labels: [
+          'Gorenjska',
+          'J. Primorska',
+          'LJ-mesto',
+          'LJ-okolica',
+          'Podravska',
+        ],
+        datasets: [
+          {
+            data: this.adsGroupedRegijaVrsta
+              .filter((item) => item.vrsta === 'Hiša')
+              .map((item) => item.count),
+
+            label: 'Hiša',
+          },
+          {
+            data: this.adsGroupedRegijaVrsta
+              .filter((item) => item.vrsta === 'Stanovanje')
+              .map((item) => item.count),
+
+            label: 'Stanovanje',
+          },
+        ],
+      };
+    }, 2000);
   }
 
   getMedian(): void {
