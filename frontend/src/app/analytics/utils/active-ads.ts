@@ -4,3 +4,9 @@ export interface ActiveAd {
   tip: string;
   count: number;
 }
+
+export interface RegijaVrstaCount {
+  regija: string;
+  vrsta: string;
+  count: number;
+}
