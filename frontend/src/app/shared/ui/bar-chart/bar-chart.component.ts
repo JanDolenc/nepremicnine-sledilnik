@@ -8,25 +8,11 @@ import { BaseChartDirective } from 'ng2-charts';
   templateUrl: './bar-chart.component.html',
 })
 export class BarChartComponent implements OnInit {
-  @Input({ required: true }) chartData!: any[];
+  @Input({ required: true }) barChartData!: any;
+  @Input() customChartOptions!: any;
   barChartOptions!: any;
-  barChartData!: any;
 
   ngOnInit(): void {
-    this.barChartData = {
-      labels: this.chartData.map((item) => item.regija),
-      datasets: [
-        {
-          data: this.chartData.map((item) => item.hisa),
-          label: 'Hiša',
-        },
-        {
-          data: this.chartData.map((item) => item.stanovanje),
-          label: 'Stanovanje',
-        },
-      ],
-    };
-
     this.barChartOptions = {
       responsive: false,
       locale: 'sl',
@@ -70,6 +56,8 @@ export class BarChartComponent implements OnInit {
           display: false,
         },
       },
+
+      ...this.customChartOptions,
     };
   }
 }

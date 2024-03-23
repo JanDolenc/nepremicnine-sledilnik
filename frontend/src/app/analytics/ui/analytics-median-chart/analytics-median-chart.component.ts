@@ -10,9 +10,23 @@ import { Median } from '../../utils/median';
 })
 export class AnalyticsMedianChartComponent implements OnInit {
   @Input({ required: true }) median!: Median;
-  chartData: any[] = [];
+  medianData: any[] = [];
+  barChartData: any;
 
   ngOnInit(): void {
-    this.chartData = this.median.median;
+    this.medianData = this.median.median;
+    this.barChartData = {
+      labels: this.medianData.map((item) => item.regija),
+      datasets: [
+        {
+          data: this.medianData.map((item) => item.hisa),
+          label: 'Hiša',
+        },
+        {
+          data: this.medianData.map((item) => item.stanovanje),
+          label: 'Stanovanje',
+        },
+      ],
+    };
   }
 }
