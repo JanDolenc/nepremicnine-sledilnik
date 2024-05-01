@@ -76,7 +76,7 @@ export class AnalyticsDashboardPage implements OnInit {
       this.sumActiveAds();
       this.prepareDataDoughnutChart();
       console.log('result', this.adsGroupedRegijaVrsta);
-    }, 1000);
+    }, 3000);
 
     setTimeout(() => {
       // chart ads by region
@@ -105,7 +105,7 @@ export class AnalyticsDashboardPage implements OnInit {
           },
         ],
       };
-    }, 2000);
+    }, 4000);
   }
 
   getMedian(): void {

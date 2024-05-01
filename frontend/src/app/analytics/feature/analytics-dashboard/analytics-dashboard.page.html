@@ -71,9 +71,42 @@
       </div>
     </div>
   </section>
-  @if (median) {
-  <div class="mt-[1000px]">
-    <app-analytics-median-chart [median]="median" />
-  </div>
-  }
+  <section>
+    @if (median) {
+    <div class="mt-48 mb-16">
+      <h2 class="font-semibold text-3xl mb-8">
+        Junij 2023 - {{ today | date : "MMMM yyyy"}}
+      </h2>
+      <div class="ns-container flex gap-8">
+        <app-analytics-median-chart class="ns-left-side" [median]="median" />
+        <div class="ns-right-side flex flex-col gap-8">
+          <div
+            class="ns-stats-card w-min-full bg-neutral-100 py-4 px-8 rounded-lg text-center"
+          >
+            <div class="font-bold text-2xl mt-2">1,5%</div>
+            <div class="font-medium text-lg">oglasov je zvišalo ceno.</div>
+          </div>
+          <div
+            class="ns-stats-card bg-neutral-100 py-4 px-8 rounded-lg text-center"
+          >
+            <div class="font-medium text-lg">Povprečno je zrastla za</div>
+            <div class="font-bold text-2xl mt-2">42.653,06 €</div>
+          </div>
+          <div
+            class="ns-stats-card bg-neutral-100 py-4 px-8 rounded-lg text-center"
+          >
+            <div class="font-bold text-2xl mt-2">11,9%</div>
+            <div class="font-medium text-lg">oglasov je znižalo ceno.</div>
+          </div>
+          <div
+            class="ns-stats-card bg-neutral-100 py-4 px-8 rounded-lg text-center"
+          >
+            <div class="font-medium text-lg">Povprečno se je znižala za</div>
+            <div class="font-bold text-2xl mt-2">32.465,24 €</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </section>
 </div>
