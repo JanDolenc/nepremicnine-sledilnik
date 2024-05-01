@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from fastapi.encoders import jsonable_encoder
 from sqlmodel import Session, select, func
+from statistics import median
 
 from db_common.models import Oglas, OglasCena
 
@@ -91,3 +92,92 @@ def get_similar_oglasi(session: Session, query_params: dict):
     print("results count ---", len(results))
 
     return similar_oglasi
+
+
+def get_median(session: Session):
+    statement = (
+        select(
+            Oglas.vrsta,
+            Oglas.regija,
+            func.round(OglasCena.cena / Oglas.velikost, 2)
+        )
+        .join(OglasCena)
+        .where(
+            OglasCena.record_ts == (
+                select(func.max(OglasCena.record_ts))
+                .where(Oglas.id == OglasCena.oglas_id)
+                .scalar_subquery()
+                .correlate(Oglas)
+            )
+        ).order_by(Oglas.regija, Oglas.vrsta)
+    )
+
+    db_data = session.exec(statement).all()
+
+    # group db data by regija and vrsta
+    grouped_data: dict = {}
+
+    for regija, vrsta, price_per_m2 in db_data:
+        key = (regija, vrsta)
+
+        if not grouped_data.get(key):
+            grouped_data[key] = []
+
+        grouped_data[key].append(price_per_m2)
+
+    # calculate median values for every regija and vrsta
+    median_values: dict = {}
+    for key, prices in grouped_data.items():
+
+        # create a new key - regija
+        if not median_values.get(key[1]):
+            median_values[key[1]] = {key[0]: median(prices)}
+        # append to existing key
+        else:
+            median_values[key[1]][key[0]] = median(prices)
+
+    print()
+    print("median db_data count ---", len(db_data))
+
+    # prepare data for return
+    median_list: list = []
+
+    for key, value in median_values.items():
+        item = {'regija': key, 'hisa': value.get(
+            'Hiša'), 'stanovanje': value.get('Stanovanje')}
+        median_list.append(item)
+
+    result: dict = {
+
+        'period': 'all time',
+        'median': median_list,
+    }
+
+    return result
+
+
+def get_active_ads(session: Session, year: int, month: int):
+    statement = (
+        select(
+            Oglas.regija,
+            Oglas.vrsta,
+            Oglas.tip,
+            func.count(Oglas.id)
+        )
+        .join(OglasCena)
+        .where(
+            OglasCena.record_ts == (
+                select(func.max(OglasCena.record_ts))
+                .where(Oglas.id == OglasCena.oglas_id)
+                .where(func.year(func.from_unixtime(OglasCena.record_ts)) == year)
+                .where(func.month(func.from_unixtime(OglasCena.record_ts)) == month)
+                .scalar_subquery()
+                .correlate(Oglas)
+            )
+        )
+        .group_by(Oglas.regija, Oglas.vrsta, Oglas.tip)
+        .order_by(Oglas.regija, Oglas.vrsta, Oglas.tip)
+    )
+
+    results = session.exec(statement).all()
+    return results
