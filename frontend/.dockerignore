@@ -1,0 +1,9 @@
+**/node_modules
+**/dist
+**/.angular
+**/Makefile
+**/Dockerfile
+**/.dockerignore
+**/.editorconfig
+**/*.log
+**/*.md
