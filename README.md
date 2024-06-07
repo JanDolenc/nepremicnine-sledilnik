@@ -11,8 +11,6 @@ Try the MVP version at [nepremicninesledilnik.com](http://www.nepremicninesledil
 As you probably know, buying real estate today in Slovenia is quite challenging due to the housing crisis.
 The lack of apartments is causing, or better, allowing available apartments on the market to reach record prices.
 
-The prices have been slowly rising since 2015, but after the coronavirus pandemic, they took off (as much as a 15% increase in a year - [source](https://www.e-prostor.gov.si/fileadmin/Podrocja/Trg_vrednosti_nep/Trg_nepremicnin/Porocila_o_trgu_nepremicnin/2021/Letno_porocilo_za_leto_2021.pdf)). As of 2024, real estate prices are not rising anymore, but rather stagnating at record levels.
-
 This got me thinking. How does someone with no experience start searching for a (first) home? How can someone evaluate if the real estate price is appropriate or fair? How to assess an offer?
 
 I concluded that the best way is to start monitoring the real estate market and track prices on ads that are interesting to us. However, doing that manually is time-consuming and inefficient.
@@ -42,12 +40,10 @@ The viewing is done with the web app. When the user visits our app, an API call 
   - Chartjs for ploting the charts
 - DevOps
   - Docker for easy deployment. All services run in Docker containers.
-  - GitHub Actions for automatically building Docker images and pushing them to the registry\*
+  - GitHub Actions for automatically building Docker images and pushing them to the registry
   - Bash scripts and cron jobs.
 
 Still curious? A more detailed description of how it works is available in my [bachelor thesis.](https://dk.um.si/IzpisGradiva.php?id=88433&lang=slv)
-
-\*due to the naming convention of my Docker images I could not set up a free container registry for all images, so for now, it works just with crawler image
 
 ## Roadmap
 
