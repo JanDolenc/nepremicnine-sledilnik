@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
+import { SearchInterfacePage } from './search/feature/search-interface/search-interface.page';
 import { HeaderComponent } from './shared/ui/header/header.component';
 import { MobileMenuComponent } from './shared/ui/mobile-menu/mobile-menu.component';
-import { SearchInterfacePage } from './search/feature/search-interface/search-interface.page';
+import { MobileMenuService } from './shared/data-access/mobile-menu.service';
 
 @Component({
   selector: 'app-root',
@@ -18,5 +19,5 @@ import { SearchInterfacePage } from './search/feature/search-interface/search-in
   styleUrl: './app.component.css',
 })
 export class AppComponent {
-  title = 'frontend';
+  mobileMenuService: MobileMenuService = inject(MobileMenuService);
 }

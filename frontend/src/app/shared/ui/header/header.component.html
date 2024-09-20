@@ -1,6 +1,6 @@
 <header class="bg-white text-neutral-900 w-full border-b-2 border-gray-200">
   <div class="h-16 flex px-4 md:px-6 lg:px-8 2xl:px-16">
-    <nav class="flex">
+    <nav class="flex justify-between w-full">
       <div class="ns-branding flex">
         <a class="flex items-center" href="#">
           <div class="ns-logo min-w-8 max-w-8 md:max-w-9">
@@ -19,6 +19,49 @@
           </div>
         </a>
       </div>
+      <!-- mobile menu icon -->
+      <div class="flex items-center p-1 md:hidden">
+        @if (mobileMenuService.isMobileMenuOpen()) {
+        <button (click)="mobileMenuService.close()">
+          <span class="sr-only">Close mobile menu</span>
+          <!-- close mobile menu icon (x-mark) -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+        } @else {
+        <button (click)="mobileMenuService.open()">
+          <span class="sr-only">Open mobile menu</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-8"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+            />
+          </svg>
+        </button>
+        }
+      </div>
+      <!-- mobile menu icon end -->
+
       <div
         class="ns-menu hidden items-center gap-8 border-l-2 border-gray-200 ml-6 pl-6"
       >

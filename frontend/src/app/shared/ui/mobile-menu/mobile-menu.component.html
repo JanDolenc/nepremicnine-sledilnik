@@ -5,6 +5,7 @@
       <li class="h-16 flex items-center px-4 hover:bg-neutral-100">
         <a
           routerLink="/analytics"
+          (click)="mobileMenuService.close()"
           class="flex justify-between items-center w-full"
         >
           <!-- analytics icon (bar-chart)-->
@@ -50,6 +51,7 @@
       <li class="h-16 flex items-center px-4 hover:bg-neutral-100">
         <a
           routerLink="/search"
+          (click)="mobileMenuService.close()"
           class="flex justify-between items-center w-full"
         >
           <!-- search icon (magnifying-glass)-->

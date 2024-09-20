@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
+import { MobileMenuService } from '../../data-access/mobile-menu.service';
 
 @Component({
   selector: 'app-mobile-menu',
@@ -7,4 +9,6 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   templateUrl: './mobile-menu.component.html',
 })
-export class MobileMenuComponent {}
+export class MobileMenuComponent {
+  mobileMenuService: MobileMenuService = inject(MobileMenuService);
+}
