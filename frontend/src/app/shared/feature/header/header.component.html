@@ -19,11 +19,13 @@
           </div>
         </a>
       </div>
-      <!-- mobile menu icon -->
-      <div class="flex items-center p-1 md:hidden">
+
+      <!-- mobile menu open/close -->
+      <div class="ns-mobile-menu flex items-center p-1 md:hidden">
         @if (mobileMenuService.isMobileMenuOpen()) {
         <button (click)="mobileMenuService.close()">
           <span class="sr-only">Close mobile menu</span>
+
           <!-- close mobile menu icon (x-mark) -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -43,6 +45,8 @@
         } @else {
         <button (click)="mobileMenuService.open()">
           <span class="sr-only">Open mobile menu</span>
+
+          <!-- open mobile menu icon (bars-3) -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -60,24 +64,33 @@
         </button>
         }
       </div>
-      <!-- mobile menu icon end -->
+      <!-- mobile menu open/close end -->
 
-      <div
-        class="ns-menu hidden items-center gap-8 border-l-2 border-gray-200 ml-6 pl-6"
-      >
+      <!-- desktop menu -->
+      <div class="ns-menu hidden md:flex items-center gap-8">
         <a
-          class="font-semibold text-base text-neutral-900 opacity-80 hover:opacity-65"
+          class="font-semibold text-base text-neutral-900 hover:opacity-70 transition ease-in-out delay-75 duration-150"
           routerLink="/analytics"
         >
           <span>Analitika</span>
         </a>
         <a
-          class="font-semibold text-base text-neutral-900 opacity-80 hover:opacity-65"
+          class="font-semibold text-base text-neutral-900 hover:opacity-70 transition ease-in-out delay-75 duration-150"
           routerLink="/search"
         >
           <span>Iskalnik</span>
         </a>
-      </div>
+
+        <!-- Login button (uncomment when login system will be implemented) -->
+        <!--
+        <a
+          class="font-semibold text-base text-neutral-900 bg-neutral-100 rounded-lg px-3 py-2 hover:bg-neutral-200 transition ease-in-out delay-150 duration-200"
+          href="#"
+        >
+          <span>Login</span>
+        </a>
+      --></div>
+      <!-- desktop menu end -->
     </nav>
   </div>
 </header>
