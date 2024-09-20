@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { SearchInterfacePage } from './search/feature/search-interface/search-interface.page';
-import { HeaderComponent } from './shared/ui/header/header.component';
+import { HeaderComponent } from './shared/feature/header/header.component';
 import { MobileMenuComponent } from './shared/ui/mobile-menu/mobile-menu.component';
 import { MobileMenuService } from './shared/data-access/mobile-menu.service';
 
