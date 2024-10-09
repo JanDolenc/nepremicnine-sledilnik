@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -9,7 +10,7 @@ import {
 @Component({
   selector: 'app-search-bar',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './search-bar.component.html',
 })
 export class SearchBarComponent {

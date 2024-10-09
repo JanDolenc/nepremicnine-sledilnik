@@ -4,9 +4,13 @@
     [formGroup]="searchForm"
     (ngSubmit)="onSubmit()"
   >
-    <div class="mb-4">
+    <div class="mb-2">
       <input
-        class="bg-neutral-50 hover:bg-neutral-100 min-w-96 focus-visible:outline-1 focus-visible:outline-neutral-400 rounded-xl border-neutral-900 p-2 text-base"
+        class="bg-neutral-100 hover:bg-neutral-50 focus-visible:bg-neutral-50 placeholder-neutral-400 min-w-80 sm:min-w-96 lg:min-w-[470px] focus-visible:outline-1 focus-visible:outline-neutral-400 border-2 rounded-xl px-3 py-[10px] text-base transition ease-in-out duration-150 delay-100"
+        [ngClass]="{
+          'text-red-400 focus-visible:outline-red-400 border-red-400 ':
+            searchForm.invalid && searchForm.dirty && searchForm.touched
+        }"
         id="ad-url"
         type="url"
         name="ad-url"
@@ -14,23 +18,24 @@
         required
         formControlName="url"
       />
-    </div>
-    <!-- Validation msg -->
-    @if (url?.invalid && url?.dirty && url?.touched){
-    <div
-      class="ns-error-msg bg-red-100 text-red-600 text-sm border-red-300 border-2 rounded-lg px-4 py-2 mb-4 max-w-[480px]"
-    >
-      @if (url?.hasError('required')) {
-      <p>Polje je obvezno. Vnesi URL povezavo.</p>
 
-      } @if (url?.touched && url?.hasError('minlength')) {
-      <p>Vnesena URL povezava je prekratka. Vsebovati mora vsaj 6 znakov.</p>
+      <!-- Validation message -->
+      <div
+        class="ns-error-msg text-red-600 text-xs mt-1 ml-2 lg:ml-4 min-h-4 max-w-80 sm:max-w-96 lg:max-w-[470px]"
+      >
+        @if (url?.invalid && url?.dirty && url?.touched){ @if
+        (url?.hasError('required')) {
+        <p>Polje je obvezno. Vnesi URL povezavo.</p>
 
-      } @if (url?.dirty && url?.hasError('maxlength')) {
-      <p>Vnesen tekst je predolg in izgleda kot neveljavna URL povezava.</p>
-      }
+        } @if (url?.touched && url?.hasError('minlength')) {
+        <p>Vnesti je potrebno vsaj 6 znakov.</p>
+
+        } @if (url?.dirty && url?.hasError('maxlength')) {
+        <p>Vnesen tekst je predolg in izgleda kot neveljavna URL povezava.</p>
+        } }
+      </div>
+      <!-- Validation message end -->
     </div>
-    }
     <div>
       <button
         type="submit"
