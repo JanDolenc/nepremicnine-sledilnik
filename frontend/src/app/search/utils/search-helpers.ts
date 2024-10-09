@@ -13,3 +13,9 @@ export const isAdActive = (recordTs: number): string => {
     return 'Neaktiven';
   }
 };
+
+export interface SearchBarOptions {
+  layout: string;
+  placeholderText: string;
+  miniButton: boolean;
+}

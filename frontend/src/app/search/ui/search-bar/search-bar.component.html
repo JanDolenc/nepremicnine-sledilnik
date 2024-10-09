@@ -1,20 +1,24 @@
 <div>
   <form
-    class="flex flex-col items-center"
+    class="flex"
     [formGroup]="searchForm"
     (ngSubmit)="onSubmit()"
+    [ngClass]="{
+      'flex-col items-center gap-2': options().layout == 'vertical',
+      'items-start gap-4': options().layout == 'horizontal'
+    }"
   >
-    <div class="mb-2">
+    <div>
       <input
-        class="bg-neutral-100 hover:bg-neutral-50 focus-visible:bg-neutral-50 placeholder-neutral-400 min-w-80 sm:min-w-96 lg:min-w-[470px] focus-visible:outline-1 focus-visible:outline-neutral-400 border-2 rounded-xl px-3 py-[10px] text-base transition ease-in-out duration-150 delay-100"
+        class="bg-neutral-100 hover:bg-neutral-50 focus-visible:bg-neutral-50 placeholder-neutral-400 min-w-80 sm:min-w-96 lg:min-w-[470px] focus-visible:outline-1 focus-visible:outline-neutral-400 rounded-xl px-3 py-[10px] text-base transition ease-in-out duration-150 delay-100"
         [ngClass]="{
-          'text-red-400 focus-visible:outline-red-400 border-red-400 ':
+          'text-red-400 focus-visible:outline-red-400 border-2 border-red-400 ':
             searchForm.invalid && searchForm.dirty && searchForm.touched
         }"
         id="ad-url"
         type="url"
         name="ad-url"
-        placeholder="Prilepi URL oglasa"
+        placeholder="{{ options().placeholderText }}"
         required
         formControlName="url"
       />
@@ -36,14 +40,39 @@
       </div>
       <!-- Validation message end -->
     </div>
+
     <div>
+      @if (options().miniButton) {
       <button
         type="submit"
-        class="bg-sea-blue-200 transition-colors duration-200 hover:bg-sea-blue-100 text-white font-semibold px-6 py-3 rounded-xl"
+        class="bg-blue-100 enabled:hover:bg-blue-50 transition-colors duration-200 px-4 py-2 rounded-xl text-sea-blue-200"
         [disabled]="!searchForm.valid"
       >
-        Prikaži zgodovino
+        <!-- search icon (magnifying-glass)-->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-7"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
       </button>
+      } @else {
+      <button
+        type="submit"
+        class="bg-sea-blue-200 transition-colors duration-200 enabled:hover:bg-sea-blue-100 text-white font-semibold px-6 py-3 rounded-xl"
+        [disabled]="!searchForm.valid"
+      >
+        <span>Prikaži zgodovino</span>
+      </button>
+      }
     </div>
   </form>
 </div>

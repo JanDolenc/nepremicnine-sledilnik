@@ -8,7 +8,11 @@
         >Brskaj. Kopiraj. Prilepi.</span
       >
     </div>
-    <app-search-bar (searchEvent)="navigateToResultPage($event)" />
+    <app-search-bar
+      [options]="{layout: 'vertical', placeholderText: 'Prilepi URL povezavo oglasa',
+    miniButton: false,}"
+      (searchEvent)="navigateToResultPage($event)"
+    />
   </div>
   <app-search-instructions />
 </div>

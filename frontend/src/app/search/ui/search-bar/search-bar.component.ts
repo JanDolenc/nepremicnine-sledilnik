@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -6,6 +6,8 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
+
+import { SearchBarOptions } from '../../utils/search-helpers';
 
 @Component({
   selector: 'app-search-bar',
@@ -16,6 +18,21 @@ import {
 export class SearchBarComponent {
   @Output() searchEvent = new EventEmitter<string>();
 
+  /**
+   * Search bar component options
+   *
+   * `layout`: `horizontal` or `vertical`,
+   *
+   * `placeholderText`: custom string,
+   *
+   * `miniButton`: `true` or `false`
+   */
+  options = input<SearchBarOptions>({
+    layout: 'horizontal',
+    placeholderText: 'Novo iskanje',
+    miniButton: false,
+  });
+
   searchForm = new FormGroup({
     url: new FormControl('', [
       Validators.required,
@@ -25,17 +42,12 @@ export class SearchBarComponent {
   });
 
   onSubmit() {
-    console.warn('submited');
     if (this.searchForm.valid) {
-      console.warn('submited AND valid', this.searchForm.value.url);
-
       this.searchEvent.emit(this.searchForm.value.url || '');
     }
   }
 
   public get url() {
     return this.searchForm.get('url');
-  }
-
   }
 }
