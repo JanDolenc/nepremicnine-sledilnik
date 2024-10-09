@@ -3,6 +3,7 @@ import {
   ReactiveFormsModule,
   FormGroup,
   FormControl,
+  Validators,
 } from '@angular/forms';
 
 @Component({
@@ -16,6 +17,9 @@ export class SearchBarComponent {
 
   searchForm = new FormGroup({
     url: new FormControl('', [
+      Validators.required,
+      Validators.minLength(6),
+      Validators.maxLength(230),
     ]),
   });
 
@@ -26,6 +30,10 @@ export class SearchBarComponent {
 
       this.searchEvent.emit(this.searchForm.value.url || '');
     }
+  }
+
+  public get url() {
+    return this.searchForm.get('url');
   }
 
   }

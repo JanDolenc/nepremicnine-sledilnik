@@ -15,10 +15,27 @@
         formControlName="url"
       />
     </div>
+    <!-- Validation msg -->
+    @if (url?.invalid && url?.dirty && url?.touched){
+    <div
+      class="ns-error-msg bg-red-100 text-red-600 text-sm border-red-300 border-2 rounded-lg px-4 py-2 mb-4 max-w-[480px]"
+    >
+      @if (url?.hasError('required')) {
+      <p>Polje je obvezno. Vnesi URL povezavo.</p>
+
+      } @if (url?.touched && url?.hasError('minlength')) {
+      <p>Vnesena URL povezava je prekratka. Vsebovati mora vsaj 6 znakov.</p>
+
+      } @if (url?.dirty && url?.hasError('maxlength')) {
+      <p>Vnesen tekst je predolg in izgleda kot neveljavna URL povezava.</p>
+      }
+    </div>
+    }
     <div>
       <button
         type="submit"
         class="bg-sea-blue-200 transition-colors duration-200 hover:bg-sea-blue-100 text-white font-semibold px-6 py-3 rounded-xl"
+        [disabled]="!searchForm.valid"
       >
         Prikaži zgodovino
       </button>
