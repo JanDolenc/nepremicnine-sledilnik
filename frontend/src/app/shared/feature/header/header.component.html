@@ -20,8 +20,16 @@
         </a>
       </div>
 
+      <!-- Search bar -->
+      <div class="ns-header-search-bar hidden lg:flex items-center">
+        <app-search-bar
+          [options]="{layout: 'horizontal', placeholderText: 'Novo iskanje', miniButton: true,}"
+          (searchEvent)="navigateToResultPage($event)"
+        />
+      </div>
+
       <!-- mobile menu open/close -->
-      <div class="ns-mobile-menu flex items-center p-1 md:hidden">
+      <div class="ns-mobile-menu flex items-center p-1 xl:hidden">
         @if (mobileMenuService.isMobileMenuOpen()) {
         <button (click)="mobileMenuService.close()">
           <span class="sr-only">Close mobile menu</span>
@@ -67,7 +75,7 @@
       <!-- mobile menu open/close end -->
 
       <!-- desktop menu -->
-      <div class="ns-menu hidden md:flex items-center gap-8">
+      <div class="ns-menu hidden xl:flex items-center gap-8">
         <a
           class="font-semibold text-base text-neutral-900 hover:opacity-70 transition ease-in-out delay-75 duration-150"
           routerLink="/analytics"

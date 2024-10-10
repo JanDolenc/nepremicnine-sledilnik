@@ -1,78 +1,77 @@
-<div>
-  <form
-    class="flex"
-    [formGroup]="searchForm"
-    (ngSubmit)="onSubmit()"
-    [ngClass]="{
-      'flex-col items-center gap-2': options().layout == 'vertical',
-      'items-start gap-4': options().layout == 'horizontal'
-    }"
-  >
-    <div>
-      <input
-        class="bg-neutral-100 hover:bg-neutral-50 focus-visible:bg-neutral-50 placeholder-neutral-400 min-w-80 sm:min-w-96 lg:min-w-[470px] focus-visible:outline-1 focus-visible:outline-neutral-400 rounded-xl px-3 py-[10px] text-base transition ease-in-out duration-150 delay-100"
-        [ngClass]="{
-          'text-red-400 focus-visible:outline-red-400 border-2 border-red-400 ':
-            searchForm.invalid && searchForm.dirty && searchForm.touched
-        }"
-        id="ad-url"
-        type="url"
-        name="ad-url"
-        placeholder="{{ options().placeholderText }}"
-        required
-        formControlName="url"
-      />
+<form
+  class="flex"
+  [formGroup]="searchForm"
+  (ngSubmit)="onSubmit()"
+  [ngClass]="{
+    'flex-col items-center gap-6': options().layout == 'vertical',
+    'items-start gap-3': options().layout == 'horizontal'
+  }"
+>
+  <div>
+    <input
+      class="bg-neutral-100 hover:bg-neutral-50 focus-visible:bg-neutral-50 border-transparent border-2 placeholder-neutral-400 min-w-80 sm:min-w-96 lg:min-w-[470px] focus-visible:outline-1 focus-visible:outline-neutral-400 rounded-xl px-3 py-[10px] text-base transition ease-in-out duration-150 delay-100"
+      [ngClass]="{
+        'text-red-400 focus-visible:outline-red-400 border-red-400 ':
+          searchForm.invalid && searchForm.dirty && searchForm.touched
+      }"
+      id="ad-url"
+      type="url"
+      name="ad-url"
+      placeholder="{{ options().placeholderText }}"
+      required
+      formControlName="url"
+    />
 
-      <!-- Validation message -->
-      <div
-        class="ns-error-msg text-red-600 text-xs mt-1 ml-2 lg:ml-4 min-h-4 max-w-80 sm:max-w-96 lg:max-w-[470px]"
-      >
-        @if (url?.invalid && url?.dirty && url?.touched){ @if
-        (url?.hasError('required')) {
-        <p>Polje je obvezno. Vnesi URL povezavo.</p>
+    <!-- Validation message -->
+    @if (url?.invalid && url?.dirty && url?.touched){
+    <div
+      class="ns-error-msg absolute bg-white rounded-b-xl text-red-600 w-full text-xs pt-1 pl-2 lg:pl-4 min-h-4 max-w-80 sm:max-w-96 lg:max-w-[470px]"
+    >
+      @if (url?.hasError('required')) {
+      <p>Polje je obvezno. Vnesi URL povezavo.</p>
 
-        } @if (url?.touched && url?.hasError('minlength')) {
-        <p>Vnesti je potrebno vsaj 6 znakov.</p>
+      } @if (url?.touched && url?.hasError('minlength')) {
+      <p>Vnesti je potrebno vsaj 6 znakov.</p>
 
-        } @if (url?.dirty && url?.hasError('maxlength')) {
-        <p>Vnesen tekst je predolg in izgleda kot neveljavna URL povezava.</p>
-        } }
-      </div>
-      <!-- Validation message end -->
-    </div>
-
-    <div>
-      @if (options().miniButton) {
-      <button
-        type="submit"
-        class="bg-blue-100 enabled:hover:bg-blue-50 transition-colors duration-200 px-4 py-2 rounded-xl text-sea-blue-200"
-        [disabled]="!searchForm.valid"
-      >
-        <!-- search icon (magnifying-glass)-->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="size-7"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-          />
-        </svg>
-      </button>
-      } @else {
-      <button
-        type="submit"
-        class="bg-sea-blue-200 transition-colors duration-200 enabled:hover:bg-sea-blue-100 text-white font-semibold px-6 py-3 rounded-xl"
-        [disabled]="!searchForm.valid"
-      >
-        <span>Prikaži zgodovino</span>
-      </button>
+      } @if (url?.dirty && url?.hasError('maxlength')) {
+      <p>Vnesen tekst je predolg in izgleda kot neveljavna URL povezava.</p>
       }
     </div>
-  </form>
-</div>
+    }
+    <!-- Validation message end -->
+  </div>
+
+  <div>
+    @if (options().miniButton) {
+    <button
+      type="submit"
+      class="bg-neutral-100 enabled:hover:bg-neutral-50 transition-colors duration-200 px-4 py-2 rounded-xl text-sea-blue-200"
+      [disabled]="!searchForm.valid"
+    >
+      <!-- search icon (magnifying-glass)-->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="size-7"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+    </button>
+    } @else {
+    <button
+      type="submit"
+      class="bg-sea-blue-200 transition-colors duration-200 enabled:hover:bg-sea-blue-100 text-white font-semibold px-6 py-3 rounded-xl"
+      [disabled]="!searchForm.valid"
+    >
+      <span>Prikaži zgodovino</span>
+    </button>
+    }
+  </div>
+</form>
