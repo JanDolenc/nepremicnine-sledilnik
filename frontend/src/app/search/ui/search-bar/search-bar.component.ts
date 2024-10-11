@@ -1,4 +1,11 @@
-import { Component, EventEmitter, input, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  input,
+  Output,
+  viewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -44,6 +51,15 @@ export class SearchBarComponent {
   onSubmit() {
     if (this.searchForm.valid) {
       this.searchEvent.emit(this.searchForm.value.url || '');
+    }
+  }
+
+  searchInput = viewChild<ElementRef>('search');
+
+  clearSearchForm(): void {
+    if (this.url !== null) {
+      this.url.reset();
+      this.searchInput()?.nativeElement.focus();
     }
   }
 

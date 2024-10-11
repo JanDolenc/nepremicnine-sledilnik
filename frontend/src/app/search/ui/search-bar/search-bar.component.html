@@ -8,19 +8,52 @@
   }"
 >
   <div>
-    <input
-      class="bg-neutral-100 hover:bg-neutral-50 focus-visible:bg-neutral-50 border-transparent border-2 placeholder-neutral-400 min-w-80 sm:min-w-96 lg:min-w-[470px] focus-visible:outline-1 focus-visible:outline-neutral-400 rounded-xl px-3 py-[10px] text-base transition ease-in-out duration-150 delay-100"
+    <!-- input and clear btn -->
+    <div
+      class="flex items-center justify-between bg-neutral-100 hover:bg-neutral-50 focus-within:bg-neutral-50 border-2 default:border-transparent placeholder-neutral-400 min-w-80 sm:min-w-96 lg:min-w-[470px] focus-within:outline outline-1 outline-neutral-600 rounded-xl px-2 py-[6px] text-base transition ease-in-out duration-150 delay-100"
       [ngClass]="{
-        'text-red-400 focus-visible:outline-red-400 border-red-400 ':
+        'text-red-400 border-red-400 focus-within:outline-red-400':
           searchForm.invalid && searchForm.dirty && searchForm.touched
       }"
-      id="ad-url"
-      type="url"
-      name="ad-url"
-      placeholder="{{ options().placeholderText }}"
-      required
-      formControlName="url"
-    />
+    >
+      <!-- input -->
+      <div class="w-full">
+        <input
+          class="w-full p-1 bg-inherit focus-visible:outline-none"
+          id="ad-url"
+          type="url"
+          name="ad-url"
+          placeholder="{{ options().placeholderText }}"
+          required
+          formControlName="url"
+          #search
+        />
+      </div>
+      <!-- input end -->
+
+      <!-- input clear btn -->
+      <div [class.hidden]="search.value === ''">
+        <button (click)="clearSearchForm()">
+          <span class="sr-only">Clear search bar text</span>
+
+          <!-- clear search bar text (x-mark) -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
 
     <!-- Validation message -->
     @if (url?.invalid && url?.dirty && url?.touched){
