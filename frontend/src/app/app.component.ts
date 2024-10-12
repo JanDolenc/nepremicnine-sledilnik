@@ -4,6 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { SearchInterfacePage } from './search/feature/search-interface/search-interface.page';
 import { HeaderComponent } from './shared/feature/header/header.component';
 import { MobileMenuComponent } from './shared/ui/mobile-menu/mobile-menu.component';
+import { SearchShortcutComponent } from './search/ui/search-shortcut/search-shortcut.component';
 import { MobileMenuService } from './shared/data-access/mobile-menu.service';
 
 @Component({
@@ -14,6 +15,7 @@ import { MobileMenuService } from './shared/data-access/mobile-menu.service';
     HeaderComponent,
     SearchInterfacePage,
     MobileMenuComponent,
+    SearchShortcutComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
