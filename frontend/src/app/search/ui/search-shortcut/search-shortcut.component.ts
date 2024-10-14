@@ -7,4 +7,6 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   templateUrl: './search-shortcut.component.html',
 })
-export class SearchShortcutComponent {}
+export class SearchShortcutComponent {
+  hide: boolean = false;
+}
