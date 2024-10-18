@@ -1,0 +1,104 @@
+<header class="bg-white text-neutral-900 w-full border-b-2 border-gray-200">
+  <div class="h-16 flex px-4 md:px-6 lg:px-8 2xl:px-16">
+    <nav class="flex justify-between w-full">
+      <div class="ns-branding flex">
+        <a class="flex items-center" href="#">
+          <div class="ns-logo min-w-8 max-w-8 md:max-w-9">
+            <img
+              src="assets/img/logo.png"
+              alt="Nepremicnine sledilnik logo"
+              width="36"
+              height="36"
+            />
+          </div>
+          <div class="ns-title flex items-baseline ml-2">
+            <span class="text-lg md:text-xl lg:text-2xl font-bold">
+              Nepremicnine sledilnik
+            </span>
+            <span class="text-xs lg:text-sm font-medium ml-1">Beta</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Search bar -->
+      <div class="ns-header-search-bar hidden lg:flex items-center">
+        <app-search-bar
+          [options]="{layout: 'horizontal', placeholderText: 'Novo iskanje', miniButton: true,}"
+          (searchEvent)="navigateToResultPage($event)"
+        />
+      </div>
+
+      <!-- mobile menu open/close -->
+      <div class="ns-mobile-menu flex items-center p-1 xl:hidden">
+        @if (mobileMenuService.isMobileMenuOpen()) {
+        <button (click)="mobileMenuService.close()">
+          <span class="sr-only">Close mobile menu</span>
+
+          <!-- close mobile menu icon (x-mark) -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+        } @else {
+        <button (click)="mobileMenuService.open()">
+          <span class="sr-only">Open mobile menu</span>
+
+          <!-- open mobile menu icon (bars-3) -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-8"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+            />
+          </svg>
+        </button>
+        }
+      </div>
+      <!-- mobile menu open/close end -->
+
+      <!-- desktop menu -->
+      <div class="ns-menu hidden xl:flex items-center gap-8">
+        <a
+          class="font-semibold text-base text-neutral-900 hover:opacity-70 transition ease-in-out delay-75 duration-150"
+          routerLink="/analytics"
+        >
+          <span>Analitika</span>
+        </a>
+        <a
+          class="font-semibold text-base text-neutral-900 hover:opacity-70 transition ease-in-out delay-75 duration-150"
+          routerLink="/search"
+        >
+          <span>Iskalnik</span>
+        </a>
+
+        <!-- Login button (uncomment when login system will be implemented) -->
+        <!--
+        <a
+          class="font-semibold text-base text-neutral-900 bg-neutral-100 rounded-lg px-3 py-2 hover:bg-neutral-200 transition ease-in-out delay-150 duration-200"
+          href="#"
+        >
+          <span>Login</span>
+        </a>
+      --></div>
+      <!-- desktop menu end -->
+    </nav>
+  </div>
+</header>
