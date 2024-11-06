@@ -27,7 +27,6 @@ export class AnalyticsDashboardPage implements OnInit {
   constructor(private analyticsService: AnalyticsService) {}
 
   median!: Median;
-  activeAds!: ActiveAd[];
 
   hisaSum: number = 0;
   stanovanjeSum: number = 0;
@@ -69,7 +68,6 @@ export class AnalyticsDashboardPage implements OnInit {
 
   ngOnInit(): void {
     this.getMedian();
-    this.getActiveAds();
 
     setTimeout(() => {
       console.log(this.activeAds);
@@ -112,12 +110,6 @@ export class AnalyticsDashboardPage implements OnInit {
     this.analyticsService
       .getMedian()
       .subscribe((median) => (this.median = median));
-  }
-
-  getActiveAds(): void {
-    this.analyticsService
-      .getActiveAds(getCurrentYearMonth())
-      .subscribe((activeAds) => (this.activeAds = activeAds));
   }
 
   sumActiveAds(): void {
