@@ -1,11 +1,11 @@
-<div class="mx-auto w-full max-w-[1440px] mt-16">
+<div class="mx-auto w-full max-w-[1440px] mt-12 lg:mt-16">
   @if (median) {
   <section>
-    <div class="mt-48 mb-16">
-      <h2 class="font-semibold text-3xl mb-8">
+    <div class="lg:mt-32 mb-16">
+      <h2 class="font-semibold text-2xl lg:text-3xl mb-8">
         junij 2023 - {{ today | date : "MMMM yyyy"}}
       </h2>
-      <div class="ns-container flex gap-8">
+      <div class="ns-container flex flex-col lg:flex-row gap-8">
         <app-analytics-median-chart class="ns-left-side" [median]="median" />
         <div class="ns-right-side flex flex-col gap-8">
           <div class="ns-stats-card w-min-full bg-neutral-100 py-4 px-8 rounded-lg text-center">
