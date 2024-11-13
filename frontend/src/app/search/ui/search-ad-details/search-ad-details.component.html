@@ -1,35 +1,31 @@
 <div>
   @if(ad.naslov) {
-  <div class="flex items-center gap-3 mb-6">
-
-    <h1 class="text-neutral-900 hover:text-neutral-600 font-semibold text-2xl">
-      <a href="{{ ad.url }}" target="_blank">
-        <div class="flex">
-          <span>
-            {{ ad.naslov }}
-          </span>
-          <svg class="mt-[3px] ml-1" fill="none" height="24" viewBox="0 0 24 24" width="24"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="m10 6h-4c-1.10457 0-2 .89543-2 2v10c0 1.1046.89543 2 2 2h10c1.1046 0 2-.8954 2-2v-4m-4-10h6m0 0v6m0-6-10 10"
-              stroke="#171717" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-          </svg>
-        </div>
-      </a>
-    </h1>
+  <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 mb-5 md:mb-6">
 
     <!-- Print isAdActive? -->
-    <div>
+    <div class="md:order-last">
       @if(isAdActive(ad.price_data[ad.price_data.length - 1].record_ts)) {
-      <span class="bg-green-100 text-green-600 text-base px-3 py-[6px] rounded-lg">
+      <span class="bg-green-100 text-green-600 text-sm md:text-base px-2 md:px-3 py-1 md:py-1.5 rounded-lg">
         Aktiven
       </span>
       }@else {
-      <span class="bg-red-100 text-red-600 text-base px-3 py-[6px] rounded-lg">
+      <span class="bg-red-100 text-red-600 text-sm md:text-base px-2 md:px-3 py-1 md:py-1.5 rounded-lg">
         Neaktiven
       </span>
       }
     </div>
+
+    <h1 class="text-neutral-900 hover:text-neutral-600 font-semibold text-xl md:text-2xl">
+      <a href="{{ ad.url }}" target="_blank" class="relative inline-block">
+        {{ ad.naslov }}
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-6 inline-block relative -top-[3px]">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+        </svg>
+      </a>
+    </h1>
+
   </div>
   }
   <div class="ns-ad-details ns-container flex flex-col gap-7">
