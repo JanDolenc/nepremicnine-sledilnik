@@ -1,4 +1,4 @@
-export const isAdActive = (recordTs: number): string => {
+export const isAdActive = (recordTs: number): boolean => {
   // convert from s to ms
   recordTs = recordTs * 1000;
   const currentTs = Date.now();
@@ -8,9 +8,9 @@ export const isAdActive = (recordTs: number): string => {
 
   // ad is considered active if delta is less than 15 days meaning crawler detected the ad in the last 15 days.
   if (tsDelta < fifteenDays) {
-    return 'Aktiven';
+    return true;
   } else {
-    return 'Neaktiven';
+    return false;
   }
 };
 

@@ -1,53 +1,45 @@
 <div>
   @if(ad.naslov) {
-  <h1
-    class="text-neutral-900 hover:text-neutral-600 font-semibold text-2xl mb-6"
-  >
-    <a href="{{ ad.url }}" target="_blank">
-      <div class="flex">
-        <span>
-          {{ ad.naslov }}
-        </span>
-        <svg
-          class="mt-[3px] ml-1"
-          fill="none"
-          height="24"
-          viewBox="0 0 24 24"
-          width="24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="m10 6h-4c-1.10457 0-2 .89543-2 2v10c0 1.1046.89543 2 2 2h10c1.1046 0 2-.8954 2-2v-4m-4-10h6m0 0v6m0-6-10 10"
-            stroke="#171717"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-          />
-        </svg>
-      </div>
-    </a>
-  </h1>
+  <div class="flex items-center gap-3 mb-6">
+
+    <h1 class="text-neutral-900 hover:text-neutral-600 font-semibold text-2xl">
+      <a href="{{ ad.url }}" target="_blank">
+        <div class="flex">
+          <span>
+            {{ ad.naslov }}
+          </span>
+          <svg class="mt-[3px] ml-1" fill="none" height="24" viewBox="0 0 24 24" width="24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="m10 6h-4c-1.10457 0-2 .89543-2 2v10c0 1.1046.89543 2 2 2h10c1.1046 0 2-.8954 2-2v-4m-4-10h6m0 0v6m0-6-10 10"
+              stroke="#171717" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+          </svg>
+        </div>
+      </a>
+    </h1>
+
+    <!-- Print isAdActive? -->
+    <div>
+      @if(isAdActive(ad.price_data[ad.price_data.length - 1].record_ts)) {
+      <span class="bg-green-100 text-green-600 text-base px-3 py-[6px] rounded-lg">
+        Aktiven
+      </span>
+      }@else {
+      <span class="bg-red-100 text-red-600 text-base px-3 py-[6px] rounded-lg">
+        Neaktiven
+      </span>
+      }
+    </div>
+  </div>
   }
   <div class="ns-ad-details ns-container flex flex-col gap-7">
     <div class="flex gap-8">
-      <app-search-ad-item
-        [label]="'Oglas zaznan'"
-        [value]="ad.detected_ts"
-        [format]="'date'"
-      />
-      <app-search-ad-item
-        [label]="'Zadnja sprememba'"
-        [value]="ad.updated_ts"
-        [format]="'date'"
-      />
-      <app-search-ad-item
-        [label]="'Status'"
-        [value]="isAdActive(ad.price_data[ad.price_data.length - 1].record_ts)"
-      />
+      <app-search-ad-item [label]="'Posredovanje'" [value]="ad.posredovanje" />
+      <app-search-ad-item [label]="'Oglas zaznan'" [value]="ad.detected_ts" [format]="'date'" />
+      <app-search-ad-item [label]="'Zadnja sprememba'" [value]="ad.updated_ts" [format]="'date'" />
     </div>
     <div class="flex gap-8">
       <app-search-ad-item [label]="'Regija'" [value]="ad.regija" />
-      <app-search-ad-item [label]="'Posredovanje'" [value]="ad.posredovanje" />
       <app-search-ad-item [label]="'Vrsta'" [value]="ad.vrsta" />
 
       @if(ad.tip) {
@@ -57,24 +49,13 @@
     </div>
 
     <div class="flex gap-8">
-      <app-search-ad-item
-        [label]="'Velikost'"
-        [value]="ad.velikost"
-        [format]="'sq-meter'"
-      />
+      <app-search-ad-item [label]="'Velikost'" [value]="ad.velikost" [format]="'sq-meter'" />
 
       @if(ad.zemljisce) {
-      <app-search-ad-item
-        [label]="'Zemljišče'"
-        [value]="ad.zemljisce"
-        [format]="'sq-meter'"
-      />
+      <app-search-ad-item [label]="'Zemljišče'" [value]="ad.zemljisce" [format]="'sq-meter'" />
 
       } @if(ad.leto_izgradnje) {
-      <app-search-ad-item
-        [label]="'Leto izgradnje'"
-        [value]="ad.leto_izgradnje"
-      />
+      <app-search-ad-item [label]="'Leto izgradnje'" [value]="ad.leto_izgradnje" />
 
       } @if(ad.nadstropje) {
       <app-search-ad-item [label]="'Nadstropje'" [value]="ad.nadstropje" />
