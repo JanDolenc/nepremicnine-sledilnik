@@ -1,6 +1,6 @@
-<div>
+<div class="xl:max-w-[590px]">
   @if(ad.naslov) {
-  <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 mb-5 md:mb-6">
+  <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 mb-5 md:mb-6 pb-2 lg:py-3.5 border-b ">
 
     <!-- Print isAdActive? -->
     <div class="md:order-last">
@@ -28,39 +28,32 @@
 
   </div>
   }
-  <div class="ns-ad-details ns-container flex flex-col gap-7">
-    <div class="flex gap-8">
-      <app-search-ad-item [label]="'Posredovanje'" [value]="ad.posredovanje" />
-      <app-search-ad-item [label]="'Oglas zaznan'" [value]="ad.detected_ts" [format]="'date'" />
-      <app-search-ad-item [label]="'Zadnja sprememba'" [value]="ad.updated_ts" [format]="'date'" />
-    </div>
-    <div class="flex gap-8">
-      <app-search-ad-item [label]="'Regija'" [value]="ad.regija" />
-      <app-search-ad-item [label]="'Vrsta'" [value]="ad.vrsta" />
 
-      @if(ad.tip) {
-      <app-search-ad-item [label]="'Tip'" [value]="ad.tip" />
+  <div class="ns-ad-details ns-container grid grid-cols-4 md:grid-cols-6 gap-4">
+    <app-search-ad-item class="col-span-2" [label]="'Oglas zaznan'" [value]="ad.detected_ts" [format]="'date'" />
+    <app-search-ad-item class="col-span-2" [label]="'Zadnja sprememba'" [value]="ad.updated_ts" [format]="'date'" />
+    <app-search-ad-item class="md:order-first col-span-2" [label]="'Posredovanje'" [value]="ad.posredovanje" />
+    <app-search-ad-item class="col-span-2" [label]="'Regija'" [value]="ad.regija" />
+    <app-search-ad-item class="col-span-2" [label]="'Vrsta'" [value]="ad.vrsta" />
 
-      }
-    </div>
+    @if(ad.tip) {
+    <app-search-ad-item class="col-span-2" [label]="'Tip'" [value]="ad.tip" />
 
-    <div class="flex gap-8">
-      <app-search-ad-item [label]="'Velikost'" [value]="ad.velikost" [format]="'sq-meter'" />
+    }
 
-      @if(ad.zemljisce) {
-      <app-search-ad-item [label]="'Zemljišče'" [value]="ad.zemljisce" [format]="'sq-meter'" />
+    <app-search-ad-item class="col-span-2" [label]="'Velikost'" [value]="ad.velikost" [format]="'sq-meter'" />
 
-      } @if(ad.leto_izgradnje) {
-      <app-search-ad-item [label]="'Leto izgradnje'" [value]="ad.leto_izgradnje" />
+    @if(ad.zemljisce) {
+    <app-search-ad-item class="col-span-2" [label]="'Zemljišče'" [value]="ad.zemljisce" [format]="'sq-meter'" />
 
-      } @if(ad.nadstropje) {
-      <app-search-ad-item [label]="'Nadstropje'" [value]="ad.nadstropje" />
-      }
-    </div>
-    <div class="flex gap-8">
-      @if(ad.agencija){
-      <app-search-ad-item [label]="'Agencija'" [value]="ad.agencija" />
-      }
-    </div>
+    } @if(ad.leto_izgradnje) {
+    <app-search-ad-item class="col-span-2" [label]="'Leto izgradnje'" [value]="ad.leto_izgradnje" />
+
+    } @if(ad.nadstropje) {
+    <app-search-ad-item class="col-span-2" [label]="'Nadstropje'" [value]="ad.nadstropje" />
+    }
+    @if(ad.agencija){
+    <app-search-ad-item class="col-span-4 md:col-span-6" [label]="'Agencija'" [value]="ad.agencija" />
+    }
   </div>
 </div>
