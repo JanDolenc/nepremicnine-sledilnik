@@ -1,21 +1,27 @@
 <div>
-  <div class="ns-min-current-max-price flex justify-center gap-14 mb-12">
-    <app-search-ad-item
-      [label]="'Najnižja cena'"
-      [value]="minPrice"
-      [format]="'price'"
-    />
-    <app-search-ad-item
-      [label]="'Trenutna cena'"
-      [value]="currentPrice"
-      [format]="'price'"
-      [customClass]="'bg-sea-blue-200 text-white'"
-    />
-    <app-search-ad-item
-      [label]="'Najvišja cena'"
-      [value]="maxPrice"
-      [format]="'price'"
-    />
+  <div class="flex gap-2.5 border-b p-4 mb-3">
+    <!-- Custom svg - zig zag connected dots -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-7 text-neutral-600">
+      <!-- Line connecting the dots -->
+      <path d="M4 15 L9 9 L15 15 L20 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" />
+
+      <!-- Four dots -->
+      <circle cx="4" cy="15" r="2" fill="currentColor" />
+      <circle cx="9" cy="9" r="2" fill="currentColor" />
+      <circle cx="15" cy="15" r="2" fill="currentColor" />
+      <circle cx="20" cy="9" r="2" fill="currentColor" />
+    </svg>
+
+    <h4 class="text-neutral-600 text-base lg:text-lg font-semibold">Zgodovina cene</h4>
   </div>
-  <app-line-chart [chartData]="chartData" />
+  <div
+    class="ns-min-current-max-price grid grid-cols-4 grid-rows-2 gap-2 mb-7 md:flex md:justify-center md:gap-14 lg:gap-3 xl:gap-14 md:mb-10 lg:mb-12">
+    <app-search-ad-item class="col-span-4" [label]="'Trenutna cena'" [value]="currentPrice" [format]="'price'"
+      [customClass]="'bg-sea-blue-200 text-white'" />
+    <app-search-ad-item class="col-span-2 md:order-first" [label]="'Najnižja cena'" [value]="minPrice"
+      [format]="'price'" />
+    <app-search-ad-item class="col-span-2" [label]="'Najvišja cena'" [value]="maxPrice" [format]="'price'" />
+  </div>
+  <app-line-chart class="md:flex md:justify-center" [chartData]="chartData" />
 </div>
