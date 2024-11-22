@@ -15,6 +15,8 @@ export class LineChartComponent {
   ngOnInit(): void {
     this.lineChartOptions = {
       responsive: true,
+      maintainAspectRatio: false,
+      aspectRatio: 0.8,
       locale: 'sl',
       scales: {
         x: {

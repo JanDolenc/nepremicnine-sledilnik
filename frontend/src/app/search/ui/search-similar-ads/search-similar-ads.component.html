@@ -1,110 +1,90 @@
 <div class="mx-auto w-full max-w-[2080px]">
-  <h2 class="text-neutral-900 text-2xl font-semibold mb-6">
-    Podobne nepremičnine v regiji z nižjo ceno ({{ similarAds.length }})
-  </h2>
-  <div class="mt-10 flex flex-col">
-    <div class="-my-2 -mx-4 sm:-mx-6 lg:-mx-8">
-      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+  <div class="ns-title-w-icon flex items-center gap-2.5 border-b p-4 mb-3">
+
+    <!-- Icon arrow trending down -->
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+      class="size-7">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M2.25 6 9 12.75l4.286-4.286a11.948 11.948 0 0 1 4.306 6.43l.776 2.898m0 0 3.182-5.511m-3.182 5.51-5.511-3.181" />
+    </svg>
+
+    <h4 class="text-neutral-600 text-base lg:text-lg font-semibold">
+      Podobne nepremičnine v regiji z nižjo ceno ({{ similarAds.length }})
+    </h4>
+
+  </div>
+  <div class="hidden md:flex md:flex-col">
+    <div class="">
+      <div class="inline-block min-w-full py-2 align-middle md:px-4">
         <table class="h-full min-w-full divide-y divide-neutral-100">
           <thead>
             <tr>
-              <th
-                scope="col"
-                class="sticky top-16 bg-white z-50 pl-6 pr-3 py-1 text-left text-sm font-normal text-neutral-600"
-              >
+              <th scope="col"
+                class="sticky top-16 bg-zinc-50 lg:bg-white z-50 pl-6 pr-3 py-1 text-left text-sm font-normal text-neutral-600">
                 #
               </th>
-              <th
-                scope="col"
-                class="sticky top-16 bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600"
-              >
+              <th scope="col"
+                class="sticky top-16 bg-zinc-50 lg:bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600">
                 Naslov
               </th>
-              <th
-                scope="col"
-                class="sticky top-16 bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600"
-              >
+              <th scope="col"
+                class="sticky top-16 bg-zinc-50 lg:bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600">
                 Vrsta
               </th>
-              <th
-                scope="col"
-                class="sticky top-16 bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600"
-              >
+              <th scope="col"
+                class="hidden 2xl:table-cell sticky top-16 bg-zinc-50 lg:bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600">
                 Tip
               </th>
-              <th
-                scope="col"
-                class="sticky top-16 bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600"
-              >
+              <th scope="col"
+                class="hidden xl:table-cell sticky top-16 bg-zinc-50 lg:bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600">
                 Nadstropje
               </th>
-              <th
-                scope="col"
-                class="sticky top-16 bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600"
-              >
+              <th scope="col"
+                class="sticky top-16 bg-zinc-50 lg:bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600">
                 Leto izgradnje
               </th>
-              <th
-                scope="col"
-                class="sticky top-16 bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600"
-              >
+              <th scope="col"
+                class="sticky top-16 bg-zinc-50 lg:bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600">
                 Velikost
               </th>
-              <th
-                scope="col"
-                class="sticky top-16 bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600"
-              >
+              <th scope="col"
+                class="sticky top-16 bg-zinc-50 lg:bg-white z-50 px-3 py-1 text-left text-sm font-normal text-neutral-600">
                 Cena
               </th>
             </tr>
           </thead>
           <tbody>
             @for (ad of similarAds; track $index) {
-            <tr
-              (click)="selectedAd(ad.referencna_st)"
-              class="hover:bg-neutral-100 cursor-pointer"
-            >
-              <td
-                class="whitespace-nowrap pl-6 pr-3 py-6 text-base font-medium text-neutral-900 rounded-l-lg"
-              >
+            <tr (click)="selectedAd(ad.referencna_st)" class="hover:bg-neutral-100 cursor-pointer">
+              <td class="whitespace-nowrap pl-6 pr-3 py-6 text-base font-medium text-neutral-900 rounded-l-lg">
                 {{ $index + 1 }}
               </td>
               <td
-                class="whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900"
-              >
+                class="whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900 truncate w-full lg:w-auto max-w-0 lg:max-w-none">
                 {{ ad.naslov }}
               </td>
-              <td
-                class="whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900"
-              >
+              <td class="whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900">
                 {{ ad.vrsta }}
+                <dl class="2xl:hidden font-normal text-sm">
+                  <dt class="sr-only">Tip</dt>
+                  <dd class="">{{ad.tip}}</dd>
+                  <dt class="sr-only xl:hidden">Nadstropje</dt>
+                  <dd class="xl:hidden">{{ad.nadstropje}}</dd>
+                </dl>
               </td>
-              <td
-                class="whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900"
-              >
+              <td class="hidden 2xl:table-cell whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900">
                 {{ ad.tip }}
               </td>
-              <td
-                class="whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900"
-              >
+              <td class="hidden xl:table-cell whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900">
                 {{ ad.nadstropje }}
               </td>
-              <td
-                class="whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900"
-              >
+              <td class="whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900">
                 {{ ad.leto_izgradnje }}
               </td>
-              <td
-                class="whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900"
-              >
-                {{ ad.velikost | number : "1.2-2" }} m<span
-                  class="align-super text-xs"
-                  >2</span
-                >
+              <td class="whitespace-nowrap px-3 py-6 text-base font-medium text-neutral-900">
+                {{ ad.velikost | number : "1.2-2" }} m<span class="align-super text-xs">2</span>
               </td>
-              <td
-                class="whitespace-nowrap px-3 py-6 text-base font-semibold text-neutral-900 rounded-r-lg"
-              >
+              <td class="whitespace-nowrap px-3 py-6 text-base font-semibold text-neutral-900 rounded-r-lg">
                 {{ ad.cena | currency : "EUR" : "symbol" : "1.2-2" }}
               </td>
             </tr>
@@ -113,5 +93,51 @@
         </table>
       </div>
     </div>
+  </div>
+
+  <!-- Cards view up to md breakpoint -->
+  <div class="grid grid-cols-6 gap-4 md:hidden">
+    @for (ad of similarAds; track $index) {
+
+    <div (click)="selectedAd(ad.referencna_st)"
+      class="ns-card-ad col-span-6 sm:col-span-3 bg-neutral-100 text-neutral-600 text-base rounded-xl px-8 py-5 hover:bg-neutral-200 cursor-pointer">
+      <h5 class="truncate font-bold">
+        <span>
+          {{ $index + 1 }}
+        </span>
+        {{ad.naslov}}
+      </h5>
+      <div class="mt-2">
+        <div class="flex gap-1">
+          <div class="font-semibold">
+            {{ad.vrsta}}
+          </div>
+          <div>
+            {{ad.tip}}
+          </div>
+        </div>
+        <div class="flex gap-2">
+          @if(ad.nadstropje) {
+          <div>
+            {{ad.nadstropje}}
+          </div>
+          }
+          <div>
+            {{ad.leto_izgradnje}}
+          </div>
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="flex justify-between gap-4">
+          <div class="font-semibold flex-shrink-0">
+            {{ ad.velikost | number : "1.2-2" }} m<span class="align-super text-xs">2</span>
+          </div>
+          <div class="font-bold text-lg">
+            {{ ad.cena | currency : "EUR" : "symbol" : "1.2-2" }}
+          </div>
+        </div>
+      </div>
+    </div>
+    }
   </div>
 </div>
