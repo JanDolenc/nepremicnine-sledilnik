@@ -13,7 +13,7 @@
     </h4>
 
   </div>
-  <div class="flex flex-col">
+  <div class="hidden md:flex md:flex-col">
     <div class="">
       <div class="inline-block min-w-full py-2 align-middle md:px-4">
         <table class="h-full min-w-full divide-y divide-neutral-100">
@@ -93,5 +93,51 @@
         </table>
       </div>
     </div>
+  </div>
+
+  <!-- Cards view up to md breakpoint -->
+  <div class="grid grid-cols-6 gap-4 md:hidden">
+    @for (ad of similarAds; track $index) {
+
+    <div (click)="selectedAd(ad.referencna_st)"
+      class="ns-card-ad col-span-6 sm:col-span-3 bg-neutral-100 text-neutral-600 text-base rounded-xl px-8 py-5 hover:bg-neutral-200 cursor-pointer">
+      <h5 class="truncate font-bold">
+        <span>
+          {{ $index + 1 }}
+        </span>
+        {{ad.naslov}}
+      </h5>
+      <div class="mt-2">
+        <div class="flex gap-1">
+          <div class="font-semibold">
+            {{ad.vrsta}}
+          </div>
+          <div>
+            {{ad.tip}}
+          </div>
+        </div>
+        <div class="flex gap-2">
+          @if(ad.nadstropje) {
+          <div>
+            {{ad.nadstropje}}
+          </div>
+          }
+          <div>
+            {{ad.leto_izgradnje}}
+          </div>
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="flex justify-between gap-4">
+          <div class="font-semibold flex-shrink-0">
+            {{ ad.velikost | number : "1.2-2" }} m<span class="align-super text-xs">2</span>
+          </div>
+          <div class="font-bold text-lg">
+            {{ ad.cena | currency : "EUR" : "symbol" : "1.2-2" }}
+          </div>
+        </div>
+      </div>
+    </div>
+    }
   </div>
 </div>
