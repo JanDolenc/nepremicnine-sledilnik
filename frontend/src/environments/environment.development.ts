@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://api.nepremicninesledilnik.com',
+  apiUrl: 'https://api.nepremicninesledilnik.com',
 };

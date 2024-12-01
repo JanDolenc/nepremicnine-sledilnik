@@ -7,13 +7,19 @@ services:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entryPoints.web.address=:80"
+      #- "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=${CERT_MAIL}"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     networks:
       - reverse_proxy-net
     ports:
-      - "80:80"
+      - "443:443"
+      #- "80:80"
       - "8080:8080"
     volumes:
+      - "letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   database:
@@ -55,7 +61,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.api.rule=Host(`api.nepremicninesledilnik.com`)"
-      - "traefik.http.routers.api.entrypoints=web"
+      # - "traefik.http.routers.api.entrypoints=web"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls.certresolver=myresolver"
 
   frontend:
     image: ${FRONTEND_IMAGE}
@@ -71,8 +79,10 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`nepremicninesledilnik.com`)"
-      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.routers.frontend.rule=Host(`nepremicninesledilnik.com`) || Host(`www.nepremicninesledilnik.com`)"
+      #  - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
 
 networks:
   reverse_proxy-net:
@@ -80,6 +90,7 @@ networks:
     external: true
 
 volumes:
+  letsencrypt:
   db-data:
     name: "nsledilnik_db-vol"
     external: true
