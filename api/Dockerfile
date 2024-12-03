@@ -15,6 +15,9 @@ RUN cd ../database/db_common_pkg/ && pip install -e .
 # Copy code and start the server
 COPY ./api .
 
+# Document which port is intended to be published. Also Traefik rely on this instruction for routing.
+EXPOSE 80
+
 CMD [ "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80" ]
 
 # for development | reload on file change
