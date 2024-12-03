@@ -1,9 +1,9 @@
 services:
   reverse-proxy:
-    image: traefik:v3.2
+    image: ${REVERSE_PROXY_IMAGE}
     container_name: "traefik"
     command:
-      - "--log.level=DEBUG"
+      # - "--log.level=DEBUG"
       - "--api=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
