@@ -91,6 +91,8 @@ services:
     image: ${UMAMI_IMAGE}
     container_name: umami
     depends_on:
+      reverse-proxy:
+        condition: service_started
       umami-db:
         condition: service_healthy
     environment:
@@ -101,9 +103,13 @@ services:
       TRACKER_SCRIPT_NAME: fetch.js
     networks:
       - umami-net
-    ports:
-      - "3000:3000"
+      - reverse_proxy-net
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.umami.rule=Host(`stats.nepremicninesledilnik.com`)"
+      - "traefik.http.routers.umami.entrypoints=websecure"
+      - "traefik.http.routers.umami.tls.certresolver=myresolver"
     healthcheck:
       test: ["CMD-SHELL", "curl http://localhost:3000/api/heartbeat"]
       interval: 5s
