@@ -88,15 +88,17 @@ services:
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
 
   umami:
-    image: ghcr.io/umami-software/umami:postgresql-latest
+    image: ${UMAMI_IMAGE}
     container_name: umami
     depends_on:
       umami-db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://umami:umami@umami-db:5432/umami
+      DATABASE_URL: postgresql://${UMAMI_PG_USER}:${UMAMI_PG_PASSWORD}@umami-db:5432/${UMAMI_PG_DATABASE}
       DATABASE_TYPE: postgresql
       APP_SECRET: ${UMAMI_APP_SECRET}
+      COLLECT_API_ENDPOINT: /api/get
+      TRACKER_SCRIPT_NAME: fetch.js
     networks:
       - umami-net
     ports:
@@ -112,9 +114,9 @@ services:
     image: postgres:15-alpine
     container_name: umami-db
     environment:
-      POSTGRES_DB: umami
-      POSTGRES_USER: umami
-      POSTGRES_PASSWORD: umami
+      POSTGRES_DB: ${UMAMI_PG_DATABASE}
+      POSTGRES_USER: ${UMAMI_PG_USER}
+      POSTGRES_PASSWORD: ${UMAMI_PG_PASSWORD}
     networks:
       - umami-net
     volumes:
