@@ -87,13 +87,62 @@ services:
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
 
+  umami:
+    image: ${UMAMI_IMAGE}
+    container_name: umami
+    depends_on:
+      reverse-proxy:
+        condition: service_started
+      umami-db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${UMAMI_PG_USER}:${UMAMI_PG_PASSWORD}@umami-db:5432/${UMAMI_PG_DATABASE}
+      DATABASE_TYPE: postgresql
+      APP_SECRET: ${UMAMI_APP_SECRET}
+      COLLECT_API_ENDPOINT: /api/get
+      TRACKER_SCRIPT_NAME: fetch.js
+    networks:
+      - umami-net
+      - reverse_proxy-net
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.umami.rule=Host(`stats.nepremicninesledilnik.com`)"
+      - "traefik.http.routers.umami.entrypoints=websecure"
+      - "traefik.http.routers.umami.tls.certresolver=myresolver"
+    healthcheck:
+      test: ["CMD-SHELL", "curl http://localhost:3000/api/heartbeat"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  umami-db:
+    image: postgres:15-alpine
+    container_name: umami-db
+    environment:
+      POSTGRES_DB: ${UMAMI_PG_DATABASE}
+      POSTGRES_USER: ${UMAMI_PG_USER}
+      POSTGRES_PASSWORD: ${UMAMI_PG_PASSWORD}
+    networks:
+      - umami-net
+    volumes:
+      - umami-db-data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
 networks:
+  umami-net:
   reverse_proxy-net:
   nsledilnik_backend-net:
     external: true
 
 volumes:
   letsencrypt:
+  umami-db-data:
   db-data:
     name: "nsledilnik_db-vol"
     external: true
