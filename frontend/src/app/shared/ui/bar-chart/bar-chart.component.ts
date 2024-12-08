@@ -15,6 +15,8 @@ export class BarChartComponent implements OnInit {
   ngOnInit(): void {
     this.barChartOptions = {
       responsive: true,
+      maintainAspectRatio: false,
+      aspectRatio: 0.8,
       locale: 'sl',
       scales: {
         x: {
