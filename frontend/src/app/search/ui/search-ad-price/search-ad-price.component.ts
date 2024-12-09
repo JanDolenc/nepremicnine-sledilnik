@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 
 import { SearchAdItemComponent } from '../search-ad-item/search-ad-item.component';
 import { Price } from '../../utils/ad';
@@ -10,7 +10,7 @@ import { LineChartComponent } from '../../../shared/ui/line-chart/line-chart.com
   imports: [SearchAdItemComponent, LineChartComponent],
   templateUrl: './search-ad-price.component.html',
 })
-export class SearchAdPriceComponent implements OnInit {
+export class SearchAdPriceComponent implements OnChanges {
   @Input({ required: true }) price_data!: Price[];
 
   maxPrice: number = 0;
@@ -18,7 +18,7 @@ export class SearchAdPriceComponent implements OnInit {
   currentPrice: number = 0;
   chartData: object[] = [];
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     this.minPrice = Math.min(...this.price_data.map((item) => item.cena));
 
     this.maxPrice = Math.max(...this.price_data.map((item) => item.cena));

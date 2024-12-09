@@ -1,10 +1,5 @@
-<div class="ns-line-chart-container">
-  <canvas
-    class="w-[1020px]"
-    baseChart
-    [data]="barChartData"
-    [options]="barChartOptions"
-    [type]="'bar'"
-  >
+<div
+  class="ns-bar-chart-container min-h-[370px] md:w-[680px] lg:w-[760px] lg:min-h-[515px] xl:w-[900px] 2xl:w-[1068px] 2xl:min-h-[534px] ">
+  <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="'bar'">
   </canvas>
 </div>

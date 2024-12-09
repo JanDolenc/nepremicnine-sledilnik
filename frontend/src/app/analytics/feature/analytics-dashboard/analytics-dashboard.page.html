@@ -1,32 +1,37 @@
 <div class="mx-auto w-full max-w-[1440px] mt-12 lg:mt-16">
   @if (median) {
   <section>
-    <div class="lg:mt-32 mb-16">
-      <h2 class="font-semibold text-2xl lg:text-3xl mb-8">
+    <div class=" mb-16">
+      <h2 class="font-semibold text-xl lg:text-2xl 2xl:text-3xl mb-7 lg:mb-8">
         junij 2023 - {{ today | date : "MMMM yyyy"}}
       </h2>
-      <div class="ns-container flex flex-col lg:flex-row gap-8">
+      <div class="ns-container flex flex-col lg:flex-row lg:justify-center xl:items-center gap-8">
         <app-analytics-median-chart class="ns-left-side" [median]="median" />
-        <div class="ns-right-side flex flex-col gap-8">
-          <div class="ns-stats-card w-min-full bg-neutral-100 py-4 px-8 rounded-lg text-center">
-            <div class="font-bold text-2xl mt-2">1,5%</div>
-            <div class="font-medium text-lg">oglasov je zvišalo ceno.</div>
+        <div class="ns-right-side flex flex-col gap-8 lg:gap-9">
+          <div
+            class="ns-stats-card w-min-full bg-neutral-100 py-5 2xl:py-6 px-8 lg:px-6 xl:px-7  rounded-lg text-center">
+            <div class="font-bold text-xl xl:text-2xl mt-2">1,5%</div>
+            <div class="font-medium text-base xl:text-lg">oglasov je zvišalo ceno.</div>
           </div>
-          <div class="ns-stats-card bg-neutral-100 py-4 px-8 rounded-lg text-center">
-            <div class="font-medium text-lg">Povprečno je zrastla za</div>
-            <div class="font-bold text-2xl mt-2">42.653,06 €</div>
+          <div class="ns-stats-card bg-neutral-100 py-5 2xl:py-6 px-8 lg:px-6 xl:px-7  rounded-lg text-center">
+            <div class="font-medium text-base xl:text-lg">Povprečno je zrastla za</div>
+            <div class="font-bold text-xl xl:text-2xl mt-2">42.653,06 €</div>
           </div>
-          <div class="ns-stats-card bg-neutral-100 py-4 px-8 rounded-lg text-center">
-            <div class="font-bold text-2xl mt-2">11,9%</div>
-            <div class="font-medium text-lg">oglasov je znižalo ceno.</div>
+          <div class="ns-stats-card bg-neutral-100 py-5 2xl:py-6 px-8 lg:px-6 xl:px-7 rounded-lg text-center">
+            <div class="font-bold text-xl xl:text-2xl mt-2">11,9%</div>
+            <div class="font-medium text-base xl:text-lg">oglasov je znižalo ceno.</div>
           </div>
-          <div class="ns-stats-card bg-neutral-100 py-4 px-8 rounded-lg text-center">
-            <div class="font-medium text-lg">Povprečno se je znižala za</div>
-            <div class="font-bold text-2xl mt-2">32.465,24 €</div>
+          <div class="ns-stats-card bg-neutral-100 py-5 2xl:py-6 px-8 lg:px-6 xl:px-7 rounded-lg text-center">
+            <div class="font-medium text-base xl:text-lg">Povprečno se je znižala za</div>
+            <div class="font-bold text-xl xl:text-2xl mt-2">32.465,24 €</div>
           </div>
         </div>
       </div>
     </div>
   </section>
+  } @else {
+  <div class="flex flex-col text-center">
+    <h3 class=" text-xl md:text-2xl text-neutral-600 italic">Nalagam...</h3>
+  </div>
   }
 </div>

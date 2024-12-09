@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
@@ -7,10 +7,24 @@ import { BaseChartDirective } from 'ng2-charts';
   imports: [BaseChartDirective],
   templateUrl: './line-chart.component.html',
 })
-export class LineChartComponent {
+export class LineChartComponent implements OnChanges, OnInit {
   @Input({ required: true }) chartData!: any[];
   lineChartOptions!: any;
   lineChartData!: any;
+
+  ngOnChanges(): void {
+    this.lineChartData = {
+      labels: this.chartData.map((item) => item.x_axis),
+      datasets: [
+        {
+          data: this.chartData.map((item) => item.data),
+          label: 'Cena',
+          tension: 0.2,
+        },
+      ],
+    };
+
+  }
 
   ngOnInit(): void {
     this.lineChartOptions = {
@@ -60,15 +74,5 @@ export class LineChartComponent {
       },
     };
 
-    this.lineChartData = {
-      labels: this.chartData.map((item) => item.x_axis),
-      datasets: [
-        {
-          data: this.chartData.map((item) => item.data),
-          label: 'Cena',
-          tension: 0.2,
-        },
-      ],
-    };
   }
 }
