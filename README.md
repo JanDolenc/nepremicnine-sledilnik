@@ -1,5 +1,13 @@
 # Nepremicnine sledilnik
 
+> [!NOTE]
+>This branch preserves the original application before redevelopment. Automatic
+>data collection stopped working because the source website blocks the scraper,
+>and other known bugs remain.
+>
+>This version is retained for historical reference. Further development continues
+>on `master`.
+
 A price tracker and analytics app for the Slovenian real estate market.
 
 We monitor the leading real estate portal in Slovenia for you. Then we provide ad history and other analytics tools, so you can deepen your understanding of the real estate market, asses your offer, and make well-informed, important decisions.
