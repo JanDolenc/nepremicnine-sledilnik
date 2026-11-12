@@ -6,6 +6,14 @@ We monitor the leading real estate portal in Slovenia for you. Then we provide a
 
 Try the MVP version at [nepremicninesledilnik.com](http://www.nepremicninesledilnik.com/search)
 
+> [!NOTE]
+> Automatic data collection is currently unavailable because the source website
+> blocks the scraper. The live demo uses historical data collected between
+> June 2023 and April 2025. Selected listings are available on the search page
+> to explore the app's functionality.
+>
+> The original version is preserved on the `archive/v1` branch.
+
 ## Motivation
 
 As you probably know, buying real estate today in Slovenia is quite challenging due to the housing crisis.
@@ -47,17 +55,6 @@ Still curious? A more detailed description of how it works is available in my [b
 
 ## Roadmap
 
-What am I planning to do next?
-
-- [ ] Add SSL certificate with Traefik
-- [ ] Add Plausible analytics
-- [ ] Fix known bugs
-- [ ] Add unit tests for API
-- [ ] Add unit tests for frontend
-- [ ] Refactor analytics feature
-- [ ] Improve UI - responsive design
-- [ ] Further improve app functionality - I have so many exciting ideas :)
-
-## Feedback
-
-Thanks for taking the time to look at my project. The app is far from perfect, but it is a start - MVP. I would appreciate your feedback, bug reports, or feature requests. I am always open to talk about it!
+I'm considering turning this project into a case study of the collected listing
+data from 2023 - 2025, exploring asking-price changes, observed listing lifetimes,
+and differences between regions and property types.
