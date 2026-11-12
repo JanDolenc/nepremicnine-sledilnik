@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { map, switchMap } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { catchError, EMPTY, map, Observable, of, switchMap } from 'rxjs';
 
 import { SearchService } from '../../data-access/search.service';
 import { SearchAdDetailsComponent } from '../../ui/search-ad-details/search-ad-details.component';
@@ -13,6 +15,7 @@ import { Ad, SimilarAd } from '../../utils/ad';
   selector: 'app-search-results',
   standalone: true,
   imports: [
+    RouterLink,
     SearchAdDetailsComponent,
     SearchAdPriceComponent,
     SearchSimilarAdsComponent,
@@ -20,9 +23,13 @@ import { Ad, SimilarAd } from '../../utils/ad';
   templateUrl: './search-results.page.html',
 })
 export class SearchResultsPage implements OnInit {
+  state: 'loading' | 'success' | 'not-found' | 'error' = 'loading';
   ad: Ad | undefined;
   // Unnested SimilarAds
   similarAds: SimilarAd[] | undefined;
+  similarAdsError = false;
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private route: ActivatedRoute,
@@ -31,36 +38,44 @@ export class SearchResultsPage implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      const url = decodeURIComponent(String(params['url']));
-      this.getData(url);
-    });
+    this.route.params
+      .pipe(
+        switchMap((params) => {
+          const url = decodeURIComponent(String(params['url']));
+          return this.getData(url);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((similarAds) => (this.similarAds = similarAds));
   }
 
   similarAdClicked(referencna_st: string) {
-    this.similarAds = undefined;
-    this.ad = undefined;
     this.router.navigate([`/search/url/${referencna_st}`]);
   }
 
-  getData(url: string): void {
-    /** Make sequential requests
-     *
-     * getSimilarAds() request needs data from the getAdDetails().
-     * getadDetails() -> complete -> getSimilarAds(getAdDetails response)
-     */
-    // make first request
-    this.searchService
-      .getAdDetails(url)
-      .pipe(
-        // when complete run the second request
-        switchMap((ad) => {
-          this.ad = ad;
-          return this.searchService.getSimilarAds(ad);
-        })
-      )
-      // handle the second request response
-      .pipe(map((nestedSimilarAds) => nestedSimilarAds.similar_oglasi))
-      .subscribe((similarAds) => (this.similarAds = similarAds));
+  private getData(url: string): Observable<SimilarAd[]> {
+    this.state = 'loading';
+    this.ad = undefined;
+    this.similarAds = undefined;
+    this.similarAdsError = false;
+
+    return this.searchService.getAdDetails(url).pipe(
+      switchMap((ad) => {
+        this.ad = ad;
+        this.state = 'success';
+
+        return this.searchService.getSimilarAds(ad).pipe(
+          map((result) => result.similar_oglasi),
+          catchError((error: HttpErrorResponse) => {
+            this.similarAdsError = error.status !== 404;
+            return of<SimilarAd[]>([]);
+          })
+        );
+      }),
+      catchError((error: HttpErrorResponse) => {
+        this.state = error.status === 404 ? 'not-found' : 'error';
+        return EMPTY;
+      })
+    );
   }
 }

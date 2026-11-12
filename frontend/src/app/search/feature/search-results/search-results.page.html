@@ -1,12 +1,40 @@
-@if(ad) {
+@if (state === 'loading') {
+<p role="status" class="mt-12 text-center text-neutral-600">
+  Nalagam podatke…
+</p>
+} @else if (state === 'not-found' || state === 'error') {
+<section aria-labelledby="search-result-message" aria-live="polite" class="mx-auto mt-12 max-w-xl text-center">
+  <h1 id="search-result-message" class="text-xl font-semibold text-neutral-900">
+    @if (state === 'not-found') {
+    Oglasa ni v arhivu
+    } @else {
+    Podatkov trenutno ni mogoče naložiti.
+    }
+  </h1>
+  <p class="mt-3 text-neutral-600">
+    @if (state === 'not-found') {
+    Za ta oglas nimamo shranjenih podatkov.
+    } @else {
+    Poskusi znova pozneje.
+    }
+  </p>
+  <a routerLink="/search" class="mt-6 inline-block rounded text-dark-sea underline underline-offset-4 hover:text-sea-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-dark-sea">
+    Poglej primere iz arhiva
+  </a>
+</section>
+} @else if (ad) {
 <div class="flex flex-col lg:flex-row justify-around gap-6 mt-6 md:mt-12">
   <app-search-ad-details class="bg-zinc-50 lg:bg-white p-3 lg:p-0 border lg:border-0 rounded-xl" [ad]="ad" />
   <app-search-ad-price class="bg-zinc-50 lg:bg-white p-3 lg:p-0 border lg:border-0 rounded-xl"
     [price_data]="ad.price_data" />
 </div>
-@if(similarAds){
+@if (similarAds && similarAds.length > 0) {
 
 <div class="bg-zinc-50 lg:bg-white p-3 lg:p-0 border lg:border-0 rounded-xl mt-6 lg:mt-40 mb-16">
   <app-search-similar-ads [similarAds]="similarAds" (adClickedEvent)="similarAdClicked($event)" />
 </div>
+} @else if (similarAdsError) {
+<p role="status" class="mt-6 mb-16 text-center text-sm text-neutral-600">
+  Podobnih oglasov trenutno ni mogoče naložiti.
+</p>
 } }
