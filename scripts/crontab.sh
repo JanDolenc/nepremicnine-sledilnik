@@ -3,6 +3,13 @@
 
 
 # SCRAPER ---------
+
+# Blocked - another try
+
+# 26 21 * * * /bin/bash /home/nepremicnine-sledilnik/scripts/cron-job-crawler.sh -r gorenjska -v stanovanje -s no-sleep >> /home/nepremicnine-sledilnik/logs/cron-job/cron-gorenjska-s-`date +\%y-\%m-\%d`.log 2>&1
+
+# 39 15 * * * /bin/bash /home/nepremicnine-sledilnik/scripts/cron-job-crawler.sh -r ljubljana-okolica -v stanovanje -s no-sleep >> /home/nepremicnine-sledilnik/logs/cron-job/cron-lj-okolica-s-`date +\%y-\%m-\%d`.log 2>&1
+
 # Scrape by region
 
 # Day 1 - gorenjska
