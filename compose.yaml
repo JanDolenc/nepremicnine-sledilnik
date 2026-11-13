@@ -7,6 +7,10 @@ services:
       - "--api=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
+      # Use the shared network, not a backend-only network on multi-network containers.
+      - "--providers.docker.network=${COMPOSE_PROJECT_NAME}_reverse_proxy-net"
+      - "--accesslog=true"
+      - "--accesslog.format=json"
       - "--entryPoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
       - "--certificatesresolvers.myresolver.acme.email=${CERT_MAIL}"
@@ -22,6 +26,11 @@ services:
     volumes:
       - "letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.reverse-proxy.rule=Host(`traefik.nepremicninesledilnik.com`)"
@@ -70,6 +79,7 @@ services:
       - "traefik.http.routers.api.rule=Host(`api.nepremicninesledilnik.com`)"
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls.certresolver=myresolver"
+      - "traefik.http.services.api.loadbalancer.server.port=80"
 
   frontend:
     image: ${FRONTEND_IMAGE}
@@ -86,6 +96,7 @@ services:
       - "traefik.http.routers.frontend.rule=Host(`nepremicninesledilnik.com`) || Host(`www.nepremicninesledilnik.com`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
 
   umami:
     image: ${UMAMI_IMAGE}
@@ -110,6 +121,7 @@ services:
       - "traefik.http.routers.umami.rule=Host(`stats.nepremicninesledilnik.com`)"
       - "traefik.http.routers.umami.entrypoints=websecure"
       - "traefik.http.routers.umami.tls.certresolver=myresolver"
+      - "traefik.http.services.umami.loadbalancer.server.port=3000"
     healthcheck:
       test: ["CMD-SHELL", "curl http://localhost:3000/api/heartbeat"]
       interval: 5s
@@ -137,6 +149,8 @@ services:
 networks:
   umami-net:
   reverse_proxy-net:
+    # Preserve Compose's default network name and match Traefik's provider setting.
+    name: "${COMPOSE_PROJECT_NAME}_reverse_proxy-net"
   nsledilnik_backend-net:
     external: true
 
